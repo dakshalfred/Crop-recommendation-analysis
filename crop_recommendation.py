@@ -7,13 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1canoNUY0f0finuyqQzXf88hdWWqEQHr5
 """
 
-# Install Flask and pyngrok
-!pip install flask pyngrok pandas
-
-"""### **Downloading streamlit**"""
-
-pip install streamlit plotly
-
 """## **Data pre processing and Making Interface**"""
 
 import streamlit as st
