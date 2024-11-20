@@ -34,13 +34,13 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# List of image URLs for background slideshow
+# List of image URLs for background slideshow (Updated URLs from GitHub)
 image_urls = [
-    "https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP",
-    "https://drive.google.com/uc?id=1GYJzuUbH7-_R8B8z6CGhyxSHISH4Hapl",
-    "https://drive.google.com/uc?id=1SNgVLNTH8o9qvT-_O4NI2QGQxNNd6H5x",
-    "https://drive.google.com/uc?id=1uzESAjpQ86bQmreq0A8TQY1j2jGh4LUb",
-    "https://drive.google.com/uc?id=1kOaD8pUB7-dLTYNXATO8a1FvFyLUeNFY",
+    "https://raw.githubusercontent.com/dakshalfred/Crop-recommendation-analysis/main/images/Specialization%20image(1).png",
+    "https://raw.githubusercontent.com/dakshalfred/Crop-recommendation-analysis/main/images/specialization(2).jpg",
+    "https://raw.githubusercontent.com/dakshalfred/Crop-recommendation-analysis/main/images/specialization(3).jpg",
+    "https://raw.githubusercontent.com/dakshalfred/Crop-recommendation-analysis/main/images/specialization(4).jpg",
+    "https://raw.githubusercontent.com/dakshalfred/Crop-recommendation-analysis/main/images/specialization(5).jpg",
 ]
 
 # Function to resize images
@@ -102,19 +102,19 @@ if image_objects:
 
         <div class="slideshow-container">
             <div class="mySlides fade">
-                <img src="https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP" alt="Image 1">
+                <img src="https://raw.githubusercontent.com/dakshalfred/Crop-recommendation-analysis/main/images/Specialization%20image(1).png" alt="Image 1">
             </div>
             <div class="mySlides fade">
-                <img src="https://drive.google.com/uc?id=1GYJzuUbH7-_R8B8z6CGhyxSHISH4Hapl" alt="Image 2">
+                <img src="https://raw.githubusercontent.com/dakshalfred/Crop-recommendation-analysis/main/images/specialization(2).jpg" alt="Image 2">
             </div>
             <div class="mySlides fade">
-                <img src="https://drive.google.com/uc?id=1SNgVLNTH8o9qvT-_O4NI2QGQxNNd6H5x" alt="Image 3">
+                <img src="https://raw.githubusercontent.com/dakshalfred/Crop-recommendation-analysis/main/images/specialization(3).jpg" alt="Image 3">
             </div>
             <div class="mySlides fade">
-                <img src="https://drive.google.com/uc?id=1uzESAjpQ86bQmreq0A8TQY1j2jGh4LUb" alt="Image 4">
+                <img src="https://raw.githubusercontent.com/dakshalfred/Crop-recommendation-analysis/main/images/specialization(4).jpg" alt="Image 4">
             </div>
             <div class="mySlides fade">
-                <img src="https://drive.google.com/uc?id=1kOaD8pUB7-dLTYNXATO8a1FvFyLUeNFY" alt="Image 5">
+                <img src="https://raw.githubusercontent.com/dakshalfred/Crop-recommendation-analysis/main/images/specialization(5).jpg" alt="Image 5">
             </div>
         </div>
 
