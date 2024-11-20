@@ -212,3 +212,33 @@ elif option == "Get Crop Information":
     state_for_crop = st.selectbox("Choose State", states_for_crop.tolist() + ["All of the above"])
 
     if state_for_crop != "All of the above":
+        # Filter data based on the selected crop and state
+        filtered_data_crop = data[(data['Crop'] == crop) & (data['State'] == state_for_crop)]
+
+        # Display data in tabular format
+        st.subheader(f"Data for {crop} in {state_for_crop}")
+        st.dataframe(filtered_data_crop)
+
+        # Option to switch between tabular and graphical format
+        show_graph_crop = st.checkbox("Show Graph")
+        if show_graph_crop:
+            st.subheader("Graphical Representation")
+            fig, ax = plt.subplots()
+            sns.barplot(data=filtered_data_crop, x="District", y="Area", ax=ax)
+            st.pyplot(fig)
+    else:
+        # Filter data for all states for the selected crop
+        filtered_data_crop_all_states = data[data['Crop'] == crop]
+
+        # Display data in tabular format
+        st.subheader(f"Data for {crop} across all states")
+        st.dataframe(filtered_data_crop_all_states)
+
+        # Option to switch between tabular and graphical format
+        show_graph_crop_all_states = st.checkbox("Show Graph for All States")
+        if show_graph_crop_all_states:
+            st.subheader("Graphical Representation")
+            fig, ax = plt.subplots()
+            sns.barplot(data=filtered_data_crop_all_states, x="State", y="Area", ax=ax)
+            st.pyplot(fig)
+
