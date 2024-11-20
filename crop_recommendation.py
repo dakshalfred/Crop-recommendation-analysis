@@ -8,16 +8,6 @@ Original file is located at
 """
 
 # Description or Title
-st.markdown(
-    """
-    <h1 style="color:white;text-align:center;font-size:25px;padding:20px;background:rgba(0,0,0,0);">
-        Welcome to the Crop Recommendation Analysis tool! 🌾  
-    This app helps you determine the best crops for specific regions and seasons based on historical data.
-    </h1>
-    """,
-    unsafe_allow_html=True,
-)
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -28,6 +18,16 @@ import requests
 
 import warnings
 warnings.filterwarnings("ignore", message="missing ScriptRunContext!")
+st.markdown(
+    """
+    <h1 style="color:white;text-align:center;font-size:25px;padding:20px;background:rgba(0,0,0,0);">
+        Welcome to the Crop Recommendation Analysis tool! 🌾  
+    This app helps you determine the best crops for specific regions and seasons based on historical data.
+    </h1>
+    """,
+    unsafe_allow_html=True,
+)
+
 
 # Function to load data from Google Drive link
 def load_data_from_drive(link):
