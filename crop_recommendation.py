@@ -19,226 +19,179 @@ from streamlit.components.v1 import html
 import warnings
 warnings.filterwarnings("ignore", message="missing ScriptRunContext!")
 
-# Add custom CSS for the full-screen background slideshow
-st.markdown(
-    """
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            position: relative;
-        }
-        .slideshow-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: -1; /* Ensures it's behind the main content */
-        }
-        .mySlides {
-            display: none;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-        }
-        .mySlides img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Ensures the image fills the screen */
-        }
-        .fade {
-            animation-name: fade;
-            animation-duration: 1s; /* Smooth fade transition */
-        }
-        @keyframes fade {
-            from {opacity: 0.4} 
-            to {opacity: 1}
-        }
-    </style>
-
-    <div class="slideshow-container">
-        <div class="mySlides fade">
-            <img src="https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP" alt="Image 1">
-        </div>
-        <div class="mySlides fade">
-            <img src="https://drive.google.com/uc?id=1GYJzuUbH7-_R8B8z6CGhyxSHISH4Hapl" alt="Image 2">
-        </div>
-        <div class="mySlides fade">
-            <img src="https://drive.google.com/uc?id=1SNgVLNTH8o9qvT-_O4NI2QGQxNNd6H5x" alt="Image 3">
-        </div>
-        <div class="mySlides fade">
-            <img src="https://drive.google.com/uc?id=1uzESAjpQ86bQmreq0A8TQY1j2jGh4LUb" alt="Image 4">
-        </div>
-        <div class="mySlides fade">
-            <img src="https://drive.google.com/uc?id=1kOaD8pUB7-dLTYNXATO8a1FvFyLUeNFY" alt="Image 5">
-        </div>
-    </div>
-
-    <script>
-        let slideIndex = 0;
-        showSlides();
-        
-        function showSlides() {
-            let slides = document.getElementsByClassName("mySlides");
-            for (let i = 0; i < slides.length; i++) {
-                slides[i].style.display = "none";  
-            }
-            slideIndex++;
-            if (slideIndex > slides.length) {slideIndex = 1}    
-            slides[slideIndex-1].style.display = "block";  
-            setTimeout(showSlides, 6000); // 6 seconds per slide
-        }
-    </script>
-    """,
-    unsafe_allow_html=True,
-)
-
-# Description or Title
-st.markdown(
-    """
-    <h1 style="text-align:center;font-size:25px;padding:20px;">
-        Welcome to the Crop Recommendation Analysis tool! 🌾  
-    This app helps you determine the best crops for specific regions and seasons based on historical data.
-    </h1>
-    """,
-    unsafe_allow_html=True,
-)
-
-from PIL import Image
-from io import BytesIO
-
-# Image URLs
-image_urls = [
-    "https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP",
-    "https://drive.google.com/uc?id=1GYJzuUbH7-_R8B8z6CGhyxSHISH4Hapl",
-    "https://drive.google.com/uc?id=1SNgVLNTH8o9qvT-_O4NI2QGQxNNd6H5x",
-    "https://drive.google.com/uc?id=1uzESAjpQ86bQmreq0A8TQY1j2jGh4LUb",
-    "https://drive.google.com/uc?id=1kOaD8pUB7-dLTYNXATO8a1FvFyLUeNFY",
-]
-
-# Preload images
-image_objects = []
-for url in image_urls:
-    try:
-        response = requests.get(url, timeout=5)  # Timeout to handle slow responses
-        if response.status_code == 200:
-            img = Image.open(BytesIO(response.content))
-            image_objects.append(img)
-    except Exception as e:
-        st.write(f"Error loading image from {url}: {e}")
-
-# Slideshow logic (Separate from background slideshow as the background is handled via CSS)
-if image_objects:
-    placeholder = st.empty()
-    for i in range(3):  # Repeat slideshow 3 times
-        for img in image_objects:
-            with placeholder.container():
-                st.image(img, use_column_width=True)
-            time.sleep(8)
-else:
-    st.write("No images could be loaded.")
-
-# Main app content
-st.title("Crop Recommendation System")
-st.markdown("Welcome to the Crop Recommendation Analysis tool! 🌾")
-
-# Dropdowns and other inputs
-option = st.selectbox("Choose an option", ["Get Crop Information", "Get Region Information"])
-st.write("Your selected option is:", option)
-
-# Function to load data from Google Drive link
+# Function to load data from Google Drive
 def load_data_from_drive(link):
-    # Extracting file ID from Google Drive URL
-    file_id = link.split('/')[-2]
-    url = f'https://drive.google.com/uc?id=1XYvWxsYyEKkFt7VH1roZuBMtQHH8MnvG'
-    response = requests.get(url)
-    return pd.read_csv(io.StringIO(response.text))
+    try:
+        # Extracting file ID from Google Drive URL
+        file_id = link.split('/')[-2]
+        url = f'https://drive.google.com/uc?id={file_id}'
+        response = requests.get(url)
+        if response.status_code == 200:
+            return pd.read_csv(io.StringIO(response.text))
+        else:
+            st.error("Failed to load data. Please check the link.")
+            return pd.DataFrame()  # Return empty dataframe in case of error
+    except Exception as e:
+        st.error(f"Error loading data: {e}")
+        return pd.DataFrame()
 
-# Streamlit Interface
+# Add a title to the app
 st.title("Crop Recommendation System")
 
-# Option selection for the user
-option = st.selectbox("Choose an option", ["Get Crop Information", "Get Region Information"])
-
-# Load dataset from Google Drive (use the actual Google Drive link here)
+# Load dataset from Google Drive (replace with your actual link)
 data_url = 'https://drive.google.com/file/d/1XYvWxsYyEKkFt7VH1roZuBMtQHH8MnvG/view?usp=drive_link'  # Replace with your Google Drive link
 data = load_data_from_drive(data_url)
 
-# Data Preprocessing
-data.dropna(subset=['Crop', 'Production', 'Area'], inplace=True)  # Removing NaN values in important columns
+# Check if data is loaded
+if data.empty:
+    st.write("No data loaded, please check the link.")
+else:
+    st.write("Data loaded successfully!")
 
-# Option 1: Get Region Information (State -> District -> Season)
-if option == "Get Region Information":
-    # State selection
-    states = data['State'].unique()
-    state = st.selectbox("Choose State", states)
+    # Image Slideshow (background)
+    st.markdown(
+        """
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            .slideshow-container {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                z-index: -1; /* Ensures it's behind the main content */
+            }
+            .mySlides {
+                display: none;
+                position: absolute;
+                width: 100%;
+                height: 100%;
+            }
+            .mySlides img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover; /* Ensures the image fills the screen */
+            }
+            .fade {
+                animation-name: fade;
+                animation-duration: 1s; /* Smooth fade transition */
+            }
+            @keyframes fade {
+                from {opacity: 0.4} 
+                to {opacity: 1}
+            }
+        </style>
 
-    # District selection based on state
-    districts = data[data['State'] == state]['District'].unique()
-    district = st.selectbox("Choose District", districts)
+        <div class="slideshow-container">
+            <div class="mySlides fade">
+                <img src="https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP" alt="Image 1">
+            </div>
+            <div class="mySlides fade">
+                <img src="https://drive.google.com/uc?id=1GYJzuUbH7-_R8B8z6CGhyxSHISH4Hapl" alt="Image 2">
+            </div>
+            <div class="mySlides fade">
+                <img src="https://drive.google.com/uc?id=1SNgVLNTH8o9qvT-_O4NI2QGQxNNd6H5x" alt="Image 3">
+            </div>
+            <div class="mySlides fade">
+                <img src="https://drive.google.com/uc?id=1uzESAjpQ86bQmreq0A8TQY1j2jGh4LUb" alt="Image 4">
+            </div>
+            <div class="mySlides fade">
+                <img src="https://drive.google.com/uc?id=1kOaD8pUB7-dLTYNXATO8a1FvFyLUeNFY" alt="Image 5">
+            </div>
+        </div>
 
-    # Season selection based on district
-    seasons = data[(data['State'] == state) & (data['District'] == district)]['Season'].unique()
-    season = st.selectbox("Select Season", seasons)
+        <script>
+            let slideIndex = 0;
+            showSlides();
+            
+            function showSlides() {
+                let slides = document.getElementsByClassName("mySlides");
+                for (let i = 0; i < slides.length; i++) {
+                    slides[i].style.display = "none";  
+                }
+                slideIndex++;
+                if (slideIndex > slides.length) {slideIndex = 1}    
+                slides[slideIndex-1].style.display = "block";  
+                setTimeout(showSlides, 6000); // 6 seconds per slide
+            }
+        </script>
+        """,
+        unsafe_allow_html=True,
+    )
 
-    # Filter data based on the selected state, district, and season
-    filtered_data_region = data[(data['State'] == state) &
-                                 (data['District'] == district) &
-                                 (data['Season'] == season)]
+    # Main interface for the Crop Recommendation System
+    option = st.selectbox("Choose an option", ["Get Crop Information", "Get Region Information"])
+    st.write("You selected:", option)
 
-    # Display data in tabular format
-    st.subheader("Crops Information for the selected Region and Season")
-    st.dataframe(filtered_data_region)
+    # Option 1: Get Region Information (State -> District -> Season)
+    if option == "Get Region Information":
+        states = data['State'].unique()
+        state = st.selectbox("Choose State", states)
+        
+        districts = data[data['State'] == state]['District'].unique()
+        district = st.selectbox("Choose District", districts)
+        
+        seasons = data[(data['State'] == state) & (data['District'] == district)]['Season'].unique()
+        season = st.selectbox("Select Season", seasons)
+        
+        filtered_data_region = data[(data['State'] == state) & (data['District'] == district) & (data['Season'] == season)]
+        
+        if not filtered_data_region.empty:
+            st.subheader("Crops Information for the selected Region and Season")
+            st.dataframe(filtered_data_region)
 
-    # Option to switch between tabular and graphical format
-    show_graph = st.checkbox("Show Graph")
-    if show_graph:
-        st.subheader("Graphical Representation")
-        fig, ax = plt.subplots()
-        sns.barplot(data=filtered_data_region, x="Crop", y="Area", ax=ax)
-        st.pyplot(fig)
+            # Option to display graph
+            show_graph = st.checkbox("Show Graph")
+            if show_graph:
+                st.subheader("Graphical Representation")
+                fig, ax = plt.subplots()
+                sns.barplot(data=filtered_data_region, x="Crop", y="Area", ax=ax)
+                st.pyplot(fig)
+        else:
+            st.write("No data available for the selected region and season.")
 
-# Option 2: Get Crop Information (Crop -> State)
-elif option == "Get Crop Information":
-    # Crop selection
-    crops = data['Crop'].unique()
-    crop = st.selectbox("Choose Crop", crops)
+    # Option 2: Get Crop Information (Crop -> State)
+    elif option == "Get Crop Information":
+        crops = data['Crop'].unique()
+        crop = st.selectbox("Choose Crop", crops)
+        
+        states_for_crop = data[data['Crop'] == crop]['State'].unique()
+        state_for_crop = st.selectbox("Choose State", states_for_crop.tolist() + ["All of the above"])
+        
+        if state_for_crop != "All of the above":
+            filtered_data_crop = data[(data['Crop'] == crop) & (data['State'] == state_for_crop)]
+            
+            if not filtered_data_crop.empty:
+                st.subheader(f"Data for {crop} in {state_for_crop}")
+                st.dataframe(filtered_data_crop)
 
-    # State selection based on crop
-    states_for_crop = data[data['Crop'] == crop]['State'].unique()
-    state_for_crop = st.selectbox("Choose State", states_for_crop.tolist() + ["All of the above"])
+                # Option to display graph
+                show_graph_crop = st.checkbox("Show Graph")
+                if show_graph_crop:
+                    st.subheader("Graphical Representation")
+                    fig, ax = plt.subplots()
+                    sns.barplot(data=filtered_data_crop, x="District", y="Area", ax=ax)
+                    st.pyplot(fig)
+            else:
+                st.write("No data available for the selected crop and state.")
+        else:
+            filtered_data_crop_all_states = data[data['Crop'] == crop]
+            
+            if not filtered_data_crop_all_states.empty:
+                st.subheader(f"Data for {crop} in All States")
+                st.dataframe(filtered_data_crop_all_states)
 
-    if state_for_crop != "All of the above":
-        # Filter data based on the selected crop and state
-        filtered_data_crop = data[(data['Crop'] == crop) & (data['State'] == state_for_crop)]
-
-        # Display data in tabular format
-        st.subheader(f"Data for {crop} in {state_for_crop}")
-        st.dataframe(filtered_data_crop)
-
-        # Option to switch between tabular and graphical format
-        show_graph_crop = st.checkbox("Show Graph")
-        if show_graph_crop:
-            st.subheader("Graphical Representation")
-            fig, ax = plt.subplots()
-            sns.barplot(data=filtered_data_crop, x="District", y="Area", ax=ax)
-            st.pyplot(fig)
-    else:
-        # Filter data for all states for the selected crop
-        filtered_data_crop_all_states = data[data['Crop'] == crop]
-
-        # Display data in tabular format
-        st.subheader(f"Data for {crop} across all states")
-        st.dataframe(filtered_data_crop_all_states)
-
-        # Option to switch between tabular and graphical format
-        show_graph_crop_all_states = st.checkbox("Show Graph for All States")
-        if show_graph_crop_all_states:
-            st.subheader("Graphical Representation")
-            fig, ax = plt.subplots()
-            sns.barplot(data=filtered_data_crop_all_states, x="State", y="Area", ax=ax)
-            st.pyplot(fig)
-
+                # Option to display graph
+                show_graph_crop_all_states = st.checkbox("Show Graph")
+                if show_graph_crop_all_states:
+                    st.subheader("Graphical Representation")
+                    fig, ax = plt.subplots()
+                    sns.barplot(data=filtered_data_crop_all_states, x="State", y="Area", ax=ax)
+                    st.pyplot(fig)
+            else:
+                st.write("No data available for the selected crop in all states.")
