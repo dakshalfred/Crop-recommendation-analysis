@@ -15,14 +15,14 @@ import seaborn as sns
 import io
 import time
 import requests
+from streamlit.components.v1 import html
+import warnings
 from PIL import Image
 from io import BytesIO
-import warnings
 
-# Suppress warnings for clean output
 warnings.filterwarnings("ignore", message="missing ScriptRunContext!")
 
-# Description or Title
+# Add custom HTML for title and description
 st.markdown(
     """
     <h1 style="text-align:center;font-size:25px;padding:20px;">
@@ -33,7 +33,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Image URLs for slideshow background (Ensure the URLs are in 'uc?id' format)
+# List of image URLs for background slideshow
 image_urls = [
     "https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP",
     "https://drive.google.com/uc?id=1GYJzuUbH7-_R8B8z6CGhyxSHISH4Hapl",
@@ -42,7 +42,7 @@ image_urls = [
     "https://drive.google.com/uc?id=1kOaD8pUB7-dLTYNXATO8a1FvFyLUeNFY",
 ]
 
-# Preload images from the URLs
+# Preload images for better performance
 image_objects = []
 for url in image_urls:
     try:
@@ -53,6 +53,94 @@ for url in image_urls:
     except Exception as e:
         st.write(f"Error loading image from {url}: {e}")
 
+# Slideshow logic (for now it's using HTML + JavaScript for background images)
+if image_objects:
+    # Add custom CSS and JavaScript for the background slideshow
+    st.markdown(
+        """
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            .slideshow-container {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                z-index: -1; /* Ensures it's behind the main content */
+            }
+            .mySlides {
+                display: none;
+                position: absolute;
+                width: 100%;
+                height: 100%;
+            }
+            .mySlides img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover; /* Ensures the image fills the screen */
+            }
+            .fade {
+                animation-name: fade;
+                animation-duration: 1s; /* Smooth fade transition */
+            }
+            @keyframes fade {
+                from {opacity: 0.4} 
+                to {opacity: 1}
+            }
+        </style>
+
+        <div class="slideshow-container">
+            <div class="mySlides fade">
+                <img src="https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP" alt="Image 1">
+            </div>
+            <div class="mySlides fade">
+                <img src="https://drive.google.com/uc?id=1GYJzuUbH7-_R8B8z6CGhyxSHISH4Hapl" alt="Image 2">
+            </div>
+            <div class="mySlides fade">
+                <img src="https://drive.google.com/uc?id=1SNgVLNTH8o9qvT-_O4NI2QGQxNNd6H5x" alt="Image 3">
+            </div>
+            <div class="mySlides fade">
+                <img src="https://drive.google.com/uc?id=1uzESAjpQ86bQmreq0A8TQY1j2jGh4LUb" alt="Image 4">
+            </div>
+            <div class="mySlides fade">
+                <img src="https://drive.google.com/uc?id=1kOaD8pUB7-dLTYNXATO8a1FvFyLUeNFY" alt="Image 5">
+            </div>
+        </div>
+
+        <script>
+            let slideIndex = 0;
+            showSlides();
+
+            function showSlides() {
+                let slides = document.getElementsByClassName("mySlides");
+                for (let i = 0; i < slides.length; i++) {
+                    slides[i].style.display = "none";  
+                }
+                slideIndex++;
+                if (slideIndex > slides.length) {slideIndex = 1}    
+                slides[slideIndex-1].style.display = "block";  
+                setTimeout(showSlides, 6000); // 6 seconds per slide
+            }
+        </script>
+        """,
+        unsafe_allow_html=True,
+    )
+else:
+    st.write("No images could be loaded.")
+
+# Main app content
+st.title("Crop Recommendation System")
+st.markdown("Welcome to the Crop Recommendation Analysis tool! 🌾")
+
+# Option selection for the user
+option = st.selectbox("Choose an option", ["Get Crop Information", "Get Region Information"])
+st.write("Your selected option is:", option)
+
 # Function to load data from Google Drive link
 def load_data_from_drive(link):
     # Extracting file ID from Google Drive URL
@@ -61,95 +149,8 @@ def load_data_from_drive(link):
     response = requests.get(url)
     return pd.read_csv(io.StringIO(response.text))
 
-# Slideshow and background logic
-st.markdown(
-    """
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background-image: url('https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP'); 
-            background-size: cover; 
-            background-position: center center;
-        }
-        .slideshow-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: -1; /* Ensures it's behind the main content */
-        }
-        .mySlides {
-            display: none;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-        }
-        .mySlides img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Ensures the image fills the screen */
-        }
-        .fade {
-            animation-name: fade;
-            animation-duration: 1s; /* Smooth fade transition */
-        }
-        @keyframes fade {
-            from {opacity: 0.4} 
-            to {opacity: 1}
-        }
-    </style>
-
-    <div class="slideshow-container">
-        <div class="mySlides fade">
-            <img src="https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP" alt="Image 1">
-        </div>
-        <div class="mySlides fade">
-            <img src="https://drive.google.com/uc?id=1GYJzuUbH7-_R8B8z6CGhyxSHISH4Hapl" alt="Image 2">
-        </div>
-        <div class="mySlides fade">
-            <img src="https://drive.google.com/uc?id=1SNgVLNTH8o9qvT-_O4NI2QGQxNNd6H5x" alt="Image 3">
-        </div>
-        <div class="mySlides fade">
-            <img src="https://drive.google.com/uc?id=1uzESAjpQ86bQmreq0A8TQY1j2jGh4LUb" alt="Image 4">
-        </div>
-        <div class="mySlides fade">
-            <img src="https://drive.google.com/uc?id=1kOaD8pUB7-dLTYNXATO8a1FvFyLUeNFY" alt="Image 5">
-        </div>
-    </div>
-
-    <script>
-        let slideIndex = 0;
-        showSlides();
-        
-        function showSlides() {
-            let slides = document.getElementsByClassName("mySlides");
-            for (let i = 0; i < slides.length; i++) {
-                slides[i].style.display = "none";  
-            }
-            slideIndex++;
-            if (slideIndex > slides.length) {slideIndex = 1}    
-            slides[slideIndex-1].style.display = "block";  
-            setTimeout(showSlides, 6000); // 6 seconds per slide
-        }
-    </script>
-    """,
-    unsafe_allow_html=True,
-)
-
-# Main app content
-st.title("Crop Recommendation System")
-st.markdown("Welcome to the Crop Recommendation Analysis tool! 🌾")
-
-# Dropdowns and other inputs
-option = st.selectbox("Choose an option", ["Get Crop Information", "Get Region Information"])
-st.write("Your selected option is:", option)
-
-# Load dataset from Google Drive link
-data_url = 'https://drive.google.com/file/d/1XYvWxsYyEKkFt7VH1roZuBMtQHH8MnvG/view?usp=drive_link'
+# Load dataset from Google Drive (use the actual Google Drive link here)
+data_url = 'https://drive.google.com/file/d/1XYvWxsYyEKkFt7VH1roZuBMtQHH8MnvG/view?usp=drive_link'  # Replace with your Google Drive link
 data = load_data_from_drive(data_url)
 
 # Data Preprocessing
@@ -212,9 +213,6 @@ elif option == "Get Crop Information":
             sns.barplot(data=filtered_data_crop, x="District", y="Area", ax=ax)
             st.pyplot(fig)
 
-    else:
-        # Display data for all states
-        filtered_data_all_states = data[data['Crop'] == crop]
-        st.subheader(f"Data for {crop} in all states")
-        st.dataframe(filtered_data_all_states)
+# Add other components or sections as needed
+
 
