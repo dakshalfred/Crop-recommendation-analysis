@@ -7,7 +7,16 @@ Original file is located at
     https://colab.research.google.com/drive/1canoNUY0f0finuyqQzXf88hdWWqEQHr5
 """
 
-"""## **Data pre processing and Making Interface**"""
+# Description or Title
+st.markdown(
+    """
+    <h1 style="color:white;text-align:center;font-size:25px;padding:20px;background:rgba(0,0,0,0);">
+        Welcome to the Crop Recommendation Analysis tool! 🌾  
+    This app helps you determine the best crops for specific regions and seasons based on historical data.
+    </h1>
+    """,
+    unsafe_allow_html=True,
+)
 
 import streamlit as st
 import pandas as pd
@@ -163,13 +172,4 @@ slideshow_html = f"""
 # Render slideshow background
 html(slideshow_html, height=0)
 
-# Description or Title
-st.markdown(
-    """
-    <h1 style="color:white;text-align:center;font-size:50px;padding:20px;background:rgba(0,0,0,0.6);">
-        Welcome to the Crop Recommendation Analysis tool! 🌾  
-    This app helps you determine the best crops for specific regions and seasons based on historical data.
-    </h1>
-    """,
-    unsafe_allow_html=True,
-)
+
