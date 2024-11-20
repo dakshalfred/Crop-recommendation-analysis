@@ -59,7 +59,7 @@ if image_objects:
         for img in image_objects:
             with placeholder.container():
                 st.image(img, use_column_width=True)
-            time.sleep(2)
+            time.sleep(8)
 else:
     st.write("No images could be loaded.")
 
