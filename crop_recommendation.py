@@ -31,11 +31,11 @@ st.markdown(
 
 # List of image URLs or paths
 image_urls = [
-    "https://drive.google.com/file/d/1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP/view?usp=drive_link",  # Replace with your image URLs
-    "https://drive.google.com/file/d/1GYJzuUbH7-_R8B8z6CGhyxSHISH4Hapl/view?usp=drive_link",
-    "https://drive.google.com/file/d/1SNgVLNTH8o9qvT-_O4NI2QGQxNNd6H5x/view?usp=drive_link",
-    "https://drive.google.com/file/d/1uzESAjpQ86bQmreq0A8TQY1j2jGh4LUb/view?usp=drive_link",
-    "https://drive.google.com/file/d/1kOaD8pUB7-dLTYNXATO8a1FvFyLUeNFY/view?usp=drive_link",
+    "https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP",
+    "https://drive.google.com/uc?id=1GYJzuUbH7-_R8B8z6CGhyxSHISH4Hapl",
+    "https://drive.google.com/uc?id=1SNgVLNTH8o9qvT-_O4NI2QGQxNNd6H5x",
+    "https://drive.google.com/uc?id=1uzESAjpQ86bQmreq0A8TQY1j2jGh4LUb",
+    "https://drive.google.com/uc?id=1kOaD8pUB7-dLTYNXATO8a1FvFyLUeNFY",
 ]
 
 # Slideshow logic
