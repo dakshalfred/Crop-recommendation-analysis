@@ -7,7 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1canoNUY0f0finuyqQzXf88hdWWqEQHr5
 """
 
-# Description or Title
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -19,51 +18,6 @@ import requests
 from streamlit.components.v1 import html
 import warnings
 warnings.filterwarnings("ignore", message="missing ScriptRunContext!")
-st.markdown(
-    """
-    <h1 style="text-align:center;font-size:25px;padding:20px;">
-        Welcome to the Crop Recommendation Analysis tool! 🌾  
-    This app helps you determine the best crops for specific regions and seasons based on historical data.
-    </h1>
-    """,
-    unsafe_allow_html=True,
-)
-
-from PIL import Image
-from io import BytesIO
-
-# Image URLs
-image_urls = [
-    "https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP",
-    "https://drive.google.com/uc?id=1GYJzuUbH7-_R8B8z6CGhyxSHISH4Hapl",
-    "https://drive.google.com/uc?id=1SNgVLNTH8o9qvT-_O4NI2QGQxNNd6H5x",
-    "https://drive.google.com/uc?id=1uzESAjpQ86bQmreq0A8TQY1j2jGh4LUb",
-    "https://drive.google.com/uc?id=1kOaD8pUB7-dLTYNXATO8a1FvFyLUeNFY",
-]
-
-# Preload images
-image_objects = []
-for url in image_urls:
-    try:
-        response = requests.get(url, timeout=5)  # Timeout to handle slow responses
-        if response.status_code == 200:
-            img = Image.open(BytesIO(response.content))
-            image_objects.append(img)
-    except Exception as e:
-        st.write(f"Error loading image from {url}: {e}")
-
-# Slideshow logic
-if image_objects:
-    placeholder = st.empty()
-    for i in range(3):  # Repeat slideshow 3 times
-        for img in image_objects:
-            with placeholder.container():
-                st.image(img, use_column_width=True)
-            time.sleep(8)
-else:
-    st.write("No images could be loaded.")
-
-import streamlit as st
 
 # Add custom CSS for the full-screen background slideshow
 st.markdown(
@@ -73,6 +27,7 @@ st.markdown(
             margin: 0;
             padding: 0;
             font-family: Arial, Helvetica, sans-serif;
+            position: relative;
         }
         .slideshow-container {
             position: fixed;
@@ -141,6 +96,51 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+# Description or Title
+st.markdown(
+    """
+    <h1 style="text-align:center;font-size:25px;padding:20px;">
+        Welcome to the Crop Recommendation Analysis tool! 🌾  
+    This app helps you determine the best crops for specific regions and seasons based on historical data.
+    </h1>
+    """,
+    unsafe_allow_html=True,
+)
+
+from PIL import Image
+from io import BytesIO
+
+# Image URLs
+image_urls = [
+    "https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP",
+    "https://drive.google.com/uc?id=1GYJzuUbH7-_R8B8z6CGhyxSHISH4Hapl",
+    "https://drive.google.com/uc?id=1SNgVLNTH8o9qvT-_O4NI2QGQxNNd6H5x",
+    "https://drive.google.com/uc?id=1uzESAjpQ86bQmreq0A8TQY1j2jGh4LUb",
+    "https://drive.google.com/uc?id=1kOaD8pUB7-dLTYNXATO8a1FvFyLUeNFY",
+]
+
+# Preload images
+image_objects = []
+for url in image_urls:
+    try:
+        response = requests.get(url, timeout=5)  # Timeout to handle slow responses
+        if response.status_code == 200:
+            img = Image.open(BytesIO(response.content))
+            image_objects.append(img)
+    except Exception as e:
+        st.write(f"Error loading image from {url}: {e}")
+
+# Slideshow logic (Separate from background slideshow as the background is handled via CSS)
+if image_objects:
+    placeholder = st.empty()
+    for i in range(3):  # Repeat slideshow 3 times
+        for img in image_objects:
+            with placeholder.container():
+                st.image(img, use_column_width=True)
+            time.sleep(8)
+else:
+    st.write("No images could be loaded.")
+
 # Main app content
 st.title("Crop Recommendation System")
 st.markdown("Welcome to the Crop Recommendation Analysis tool! 🌾")
@@ -148,7 +148,6 @@ st.markdown("Welcome to the Crop Recommendation Analysis tool! 🌾")
 # Dropdowns and other inputs
 option = st.selectbox("Choose an option", ["Get Crop Information", "Get Region Information"])
 st.write("Your selected option is:", option)
-
 
 # Function to load data from Google Drive link
 def load_data_from_drive(link):
@@ -213,37 +212,3 @@ elif option == "Get Crop Information":
     state_for_crop = st.selectbox("Choose State", states_for_crop.tolist() + ["All of the above"])
 
     if state_for_crop != "All of the above":
-        # Filter data based on the selected crop and state
-        filtered_data_crop = data[(data['Crop'] == crop) & (data['State'] == state_for_crop)]
-
-        # Display data in tabular format
-        st.subheader(f"Data for {crop} in {state_for_crop}")
-        st.dataframe(filtered_data_crop)
-
-        # Option to switch between tabular and graphical format
-        show_graph_crop = st.checkbox("Show Graph")
-        if show_graph_crop:
-            st.subheader("Graphical Representation")
-            fig, ax = plt.subplots()
-            sns.barplot(data=filtered_data_crop, x="District", y="Area", ax=ax)
-            st.pyplot(fig)
-
-    else:
-        # Show data for all states for the selected crop
-        st.subheader(f"Data for {crop} in All States")
-        filtered_data_crop_all = data[data['Crop'] == crop]
-        st.dataframe(filtered_data_crop_all)
-
-        # Option to switch between tabular and graphical format
-        show_graph_crop_all = st.checkbox("Show Graph")
-        if show_graph_crop_all:
-            st.subheader("Graphical Representation")
-            fig, ax = plt.subplots()
-            sns.barplot(data=filtered_data_crop_all, x="State", y="Area", ax=ax)
-            st.pyplot(fig)
-
-# Displaying message if data is not available for selected options
-st.write("Note: If you select a region or crop with missing data, the system will show 'Data not available'.")
-
-
-
