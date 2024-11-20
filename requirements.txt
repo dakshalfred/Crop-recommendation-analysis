@@ -11,5 +11,5 @@ time
 requests
 html
 warnings
-from PIL import Image
-from io import BytesIO
+Image
+BytesIO
