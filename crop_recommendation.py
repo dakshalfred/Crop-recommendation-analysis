@@ -43,14 +43,19 @@ image_urls = [
     "https://drive.google.com/uc?id=1kOaD8pUB7-dLTYNXATO8a1FvFyLUeNFY",
 ]
 
-# Preload images for better performance
+# Function to resize images
+def resize_image(image, size=(1280, 720)):
+    return image.resize(size)
+
+# Preload images for better performance and resize them
 image_objects = []
 for url in image_urls:
     try:
         response = requests.get(url, timeout=5)  # Timeout to handle slow responses
         if response.status_code == 200:
             img = Image.open(BytesIO(response.content))
-            image_objects.append(img)
+            img_resized = resize_image(img)  # Resize the image
+            image_objects.append(img_resized)
     except Exception as e:
         st.write(f"Error loading image from {url}: {e}")
 
@@ -209,5 +214,3 @@ elif option == "Get Crop Information":
             fig, ax = plt.subplots()
             sns.barplot(data=filtered_data_crop, x="District", y="Area", ax=ax)
             st.pyplot(fig)
-
-
