@@ -35,7 +35,7 @@ image_urls = [
     "https://drive.google.com/file/d/1GYJzuUbH7-_R8B8z6CGhyxSHISH4Hapl/view?usp=drive_link",
     "https://drive.google.com/file/d/1SNgVLNTH8o9qvT-_O4NI2QGQxNNd6H5x/view?usp=drive_link",
     "https://drive.google.com/file/d/1uzESAjpQ86bQmreq0A8TQY1j2jGh4LUb/view?usp=drive_link",
-    "https://drive.google.com/file/d/1kOaD8pUB7-dLTYNXATO8a1FvFyLUeNFY/view?usp=drive_link"
+    "https://drive.google.com/file/d/1kOaD8pUB7-dLTYNXATO8a1FvFyLUeNFY/view?usp=drive_link",
 ]
 
 # Slideshow logic
