@@ -33,7 +33,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Image URLs for slideshow background
+# Image URLs for slideshow background (Ensure the URLs are in 'uc?id' format)
 image_urls = [
     "https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP",
     "https://drive.google.com/uc?id=1GYJzuUbH7-_R8B8z6CGhyxSHISH4Hapl",
@@ -69,6 +69,9 @@ st.markdown(
             margin: 0;
             padding: 0;
             font-family: Arial, Helvetica, sans-serif;
+            background-image: url('https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP'); 
+            background-size: cover; 
+            background-position: center center;
         }
         .slideshow-container {
             position: fixed;
@@ -210,18 +213,8 @@ elif option == "Get Crop Information":
             st.pyplot(fig)
 
     else:
-        # Show data for all states for the selected crop
-        st.subheader(f"Data for {crop} in All States")
-        filtered_data_crop_all = data[data['Crop'] == crop]
-        st.dataframe(filtered_data_crop_all)
+        # Display data for all states
+        filtered_data_all_states = data[data['Crop'] == crop]
+        st.subheader(f"Data for {crop} in all states")
+        st.dataframe(filtered_data_all_states)
 
-        # Option to switch between tabular and graphical format
-        show_graph_crop_all = st.checkbox("Show Graph")
-        if show_graph_crop_all:
-            st.subheader("Graphical Representation")
-            fig, ax = plt.subplots()
-            sns.barplot(data=filtered_data_crop_all, x="State", y="Area", ax=ax)
-            st.pyplot(fig)
-
-# Displaying message if data is not available for selected options
-st.write("Note: If you select a region or crop with missing data, the system may show no available results.")
