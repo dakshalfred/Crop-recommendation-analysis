@@ -1,15 +1,8 @@
-streamlit
-pandas
-matplotlib
-seaborn
-numpy
-scikit-learn
-flask
-pyngrok
-io
-time
-requests
-html
-warnings
-Image
-BytesIO
+streamlit==1.21.0  # Make sure this matches your Python version
+pandas==1.3.3      # Example, adjust as needed
+matplotlib==3.4.3  # Example version
+seaborn==0.11.2    # Example version
+numpy==1.21.2      # Example version
+scikit-learn==1.0.2 # Example version
+requests==2.25.1   # Version for making HTTP requests
+Pillow==8.4.0      # To handle image manipulation (PIL is part of this)
