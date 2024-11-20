@@ -29,7 +29,10 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# List of image URLs or paths
+from PIL import Image
+from io import BytesIO
+
+# Image URLs
 image_urls = [
     "https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP",
     "https://drive.google.com/uc?id=1GYJzuUbH7-_R8B8z6CGhyxSHISH4Hapl",
@@ -38,13 +41,27 @@ image_urls = [
     "https://drive.google.com/uc?id=1kOaD8pUB7-dLTYNXATO8a1FvFyLUeNFY",
 ]
 
+# Preload images
+image_objects = []
+for url in image_urls:
+    try:
+        response = requests.get(url, timeout=5)  # Timeout to handle slow responses
+        if response.status_code == 200:
+            img = Image.open(BytesIO(response.content))
+            image_objects.append(img)
+    except Exception as e:
+        st.write(f"Error loading image from {url}: {e}")
+
 # Slideshow logic
-placeholder = st.empty()
-for i in range(10):  # Run slideshow for 10 cycles
-    for img_url in image_urls:
-        with placeholder.container():
-            st.image(img_url, use_column_width=True)
-        time.sleep(2)  # Pause for 2 seconds before showing the next image
+if image_objects:
+    placeholder = st.empty()
+    for i in range(3):  # Repeat slideshow 3 times
+        for img in image_objects:
+            with placeholder.container():
+                st.image(img, use_column_width=True)
+            time.sleep(2)
+else:
+    st.write("No images could be loaded.")
 
 
 # Function to load data from Google Drive link
