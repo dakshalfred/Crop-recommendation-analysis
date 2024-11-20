@@ -114,3 +114,62 @@ elif option == "Get Crop Information":
 
 # Displaying message if data is not available for selected options
 st.write("Note: If you select a region or crop with missing data, the system will show 'Data not available'.")
+
+
+import streamlit as st
+from streamlit.components.v1 import html
+
+# Slideshow images
+images = [
+    "https://drive.google.com/file/d/1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP/view?usp=drive_link",  # Replace with your image URLs
+    "https://drive.google.com/file/d/1GYJzuUbH7-_R8B8z6CGhyxSHISH4Hapl/view?usp=drive_link",
+    "https://drive.google.com/file/d/1SNgVLNTH8o9qvT-_O4NI2QGQxNNd6H5x/view?usp=drive_link",
+    "https://drive.google.com/file/d/1uzESAjpQ86bQmreq0A8TQY1j2jGh4LUb/view?usp=drive_link",
+    "https://drive.google.com/file/d/1kOaD8pUB7-dLTYNXATO8a1FvFyLUeNFY/view?usp=drive_link",
+]
+
+# HTML and CSS for slideshow
+slideshow_html = f"""
+<style>
+    body {{
+        margin: 0;
+        overflow: hidden;
+    }}
+    .slideshow {{
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
+    }}
+    .slideshow img {{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        animation: fade 30s infinite;
+    }}
+    @keyframes fade {{
+        {''.join([f'{i*100/len(images)}% {{ opacity: 0; }} {((i+1)*100/len(images))-5}% {{ opacity: 1; }} ' for i in range(len(images))])}
+    }}
+</style>
+<div class="slideshow">
+    {"".join([f'<img src="{img}" style="animation-delay: {i*5}s;">' for i, img in enumerate(images)])}
+</div>
+"""
+
+# Render slideshow background
+html(slideshow_html, height=0)
+
+# Description or Title
+st.markdown(
+    """
+    <h1 style="color:white;text-align:center;font-size:50px;padding:20px;background:rgba(0,0,0,0.6);">
+        Welcome to the Crop Recommendation Analysis tool! 🌾  
+    This app helps you determine the best crops for specific regions and seasons based on historical data.
+    </h1>
+    """,
+    unsafe_allow_html=True,
+)
