@@ -168,7 +168,7 @@ if option == "Get Region Information":
     season = st.selectbox("Select Season", seasons)
 
     # Filter data based on the selected state, district, and season
-    filtered_data_region = data[(data['State'] == state) &
+    filtered_data_region = data[(data['State'] == state) & 
                                  (data['District'] == district) & 
                                  (data['Season'] == season)]
 
@@ -209,7 +209,5 @@ elif option == "Get Crop Information":
             fig, ax = plt.subplots()
             sns.barplot(data=filtered_data_crop, x="District", y="Area", ax=ax)
             st.pyplot(fig)
-
-# Add other components or sections as needed
 
 
