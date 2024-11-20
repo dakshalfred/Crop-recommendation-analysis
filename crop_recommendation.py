@@ -28,110 +28,21 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# List of image URLs for background slideshow
-image_urls = [
-    "https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP",  # Image 1
-    "https://drive.google.com/uc?id=1GYJzuUbH7-_R8B8z6CGhyxSHISH4Hapl",  # Image 2
-    "https://drive.google.com/uc?id=1SNgVLNTH8o9qvT-_O4NI2QGQxNNd6H5x",  # Image 3
-    "https://drive.google.com/uc?id=1uzESAjpQ86bQmreq0A8TQY1j2jGh4LUb",  # Image 4
-    "https://drive.google.com/uc?id=1kOaD8pUB7-dLTYNXATO8a1FvFyLUeNFY",  # Image 5
-]
-
-# Function to resize images
-def resize_image(image, size=(1280, 720)):
-    return image.resize(size)
-
-# Preload images for better performance and resize them
-image_objects = []
-for url in image_urls:
-    try:
-        response = requests.get(url, timeout=5)  # Timeout to handle slow responses
-        if response.status_code == 200:
-            img = Image.open(BytesIO(response.content))
-            img_resized = resize_image(img)  # Resize the image
-            image_objects.append(img_resized)
-    except Exception as e:
-        st.write(f"Error loading image from {url}: {e}")
-
-# Slideshow logic (for now it's using HTML + JavaScript for background images)
-if image_objects:
-    # Add custom CSS and JavaScript for the background slideshow
-    st.markdown(
-        """
-        <style>
-            body {
-                margin: 0;
-                padding: 0;
-                font-family: Arial, Helvetica, sans-serif;
-            }
-            .slideshow-container {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                overflow: hidden;
-                z-index: -1; /* Ensures it's behind the main content */
-            }
-            .mySlides {
-                display: none;
-                position: absolute;
-                width: 100%;
-                height: 100%;
-            }
-            .mySlides img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover; /* Ensures the image fills the screen */
-            }
-            .fade {
-                animation-name: fade;
-                animation-duration: 1s; /* Smooth fade transition */
-            }
-            @keyframes fade {
-                from {opacity: 0.4} 
-                to {opacity: 1}
-            }
-        </style>
-
-        <div class="slideshow-container">
-            <div class="mySlides fade">
-                <img src="https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP" alt="Image 1">
-            </div>
-            <div class="mySlides fade">
-                <img src="https://drive.google.com/uc?id=1GYJzuUbH7-_R8B8z6CGhyxSHISH4Hapl" alt="Image 2">
-            </div>
-            <div class="mySlides fade">
-                <img src="https://drive.google.com/uc?id=1SNgVLNTH8o9qvT-_O4NI2QGQxNNd6H5x" alt="Image 3">
-            </div>
-            <div class="mySlides fade">
-                <img src="https://drive.google.com/uc?id=1uzESAjpQ86bQmreq0A8TQY1j2jGh4LUb" alt="Image 4">
-            </div>
-            <div class="mySlides fade">
-                <img src="https://drive.google.com/uc?id=1kOaD8pUB7-dLTYNXATO8a1FvFyLUeNFY" alt="Image 5">
-            </div>
-        </div>
-
-        <script>
-            let slideIndex = 0;
-            showSlides();
-
-            function showSlides() {
-                let slides = document.getElementsByClassName("mySlides");
-                for (let i = 0; i < slides.length; i++) {
-                    slides[i].style.display = "none";  
-                }
-                slideIndex++;
-                if (slideIndex > slides.length) {slideIndex = 1}    
-                slides[slideIndex-1].style.display = "block";  
-                setTimeout(showSlides, 6000); // 6 seconds per slide
-            }
-        </script>
-        """,
-        unsafe_allow_html=True,
-    )
-else:
-    st.write("No images could be loaded.")
+# using single image
+st.markdown(
+    """
+    <style>
+    body {
+        background-image: url('https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+st.write("If you see a background image, it means the image rendering works.")
 
 # Option selection for the user
 option = st.selectbox("Choose an option", ["Get Crop Information", "Get Region Information"])
