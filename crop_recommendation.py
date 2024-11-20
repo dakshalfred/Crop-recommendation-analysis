@@ -23,6 +23,7 @@ from io import BytesIO
 warnings.filterwarnings("ignore", message="missing ScriptRunContext!")
 
 # Add custom HTML for title and description
+st.title("Crop Recommendation System")
 st.markdown(
     """
     <h1 style="text-align:center;font-size:25px;padding:20px;">
@@ -132,10 +133,6 @@ if image_objects:
     )
 else:
     st.write("No images could be loaded.")
-
-# Main app content
-st.title("Crop Recommendation System")
-st.markdown("Welcome to the Crop Recommendation Analysis tool! 🌾")
 
 # Option selection for the user
 option = st.selectbox("Choose an option", ["Get Crop Information", "Get Region Information"])
