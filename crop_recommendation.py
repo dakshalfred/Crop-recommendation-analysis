@@ -21,7 +21,7 @@ import warnings
 warnings.filterwarnings("ignore", message="missing ScriptRunContext!")
 st.markdown(
     """
-    <h1 style="color:white;text-align:center;font-size:25px;padding:20px;background:rgba(0,0,0,0);">
+    <h1 style="color:black;text-align:center;font-size:25px;padding:20px;background:rgba(0,0,0,0);">
         Welcome to the Crop Recommendation Analysis tool! 🌾  
     This app helps you determine the best crops for specific regions and seasons based on historical data.
     </h1>
