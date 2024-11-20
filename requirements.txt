@@ -6,3 +6,10 @@ numpy
 scikit-learn
 flask
 pyngrok
+io
+time
+requests
+from streamlit.components.v1 import html
+warnings
+from PIL import Image
+from io import BytesIO
