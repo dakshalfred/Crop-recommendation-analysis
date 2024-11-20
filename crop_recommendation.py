@@ -8,17 +8,15 @@ Original file is located at
 """
 
 import streamlit as st
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-import io
-import time
 import requests
+import pandas as pd
+import io
 from PIL import Image
 from io import BytesIO
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-# Streamlit title and description
+# Add custom HTML for title and description
 st.title("Crop Recommendation System")
 st.markdown(
     """
@@ -30,123 +28,154 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# List of image URLs for background slideshow (GitHub Raw URLs)
+# List of image URLs for background slideshow
 image_urls = [
-    "https://raw.githubusercontent.com/dakshalfred/Crop-recommendation-analysis/main/images/Specialization%20image(1).png",
-    "https://raw.githubusercontent.com/dakshalfred/Crop-recommendation-analysis/main/images/specialization(2).jpg",
-    "https://raw.githubusercontent.com/dakshalfred/Crop-recommendation-analysis/main/images/specialization(3).jpg",
-    "https://raw.githubusercontent.com/dakshalfred/Crop-recommendation-analysis/main/images/specialization(4).jpg",
-    "https://raw.githubusercontent.com/dakshalfred/Crop-recommendation-analysis/main/images/specialization(5).jpg",
+    "https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP",  # Image 1
+    "https://drive.google.com/uc?id=1GYJzuUbH7-_R8B8z6CGhyxSHISH4Hapl",  # Image 2
+    "https://drive.google.com/uc?id=1SNgVLNTH8o9qvT-_O4NI2QGQxNNd6H5x",  # Image 3
+    "https://drive.google.com/uc?id=1uzESAjpQ86bQmreq0A8TQY1j2jGh4LUb",  # Image 4
+    "https://drive.google.com/uc?id=1kOaD8pUB7-dLTYNXATO8a1FvFyLUeNFY",  # Image 5
 ]
 
-# Add custom CSS and JavaScript for the background slideshow
-slideshow_html = """
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: Arial, Helvetica, sans-serif;
-    }
-    .slideshow-container {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        z-index: -1; /* Ensures it's behind the main content */
-    }
-    .mySlides {
-        display: none;
-        position: absolute;
-        width: 100%;
-        height: 100%;
-    }
-    .mySlides img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover; /* Ensures the image fills the screen */
-    }
-    .fade {
-        animation-name: fade;
-        animation-duration: 1s; /* Smooth fade transition */
-    }
-    @keyframes fade {
-        from {opacity: 0.4} 
-        to {opacity: 1}
-    }
-</style>
+# Function to resize images
+def resize_image(image, size=(1280, 720)):
+    return image.resize(size)
 
-<div class="slideshow-container">
-    <div class="mySlides fade">
-        <img src="https://raw.githubusercontent.com/dakshalfred/Crop-recommendation-analysis/main/images/Specialization%20image(1).png" alt="Image 1">
-    </div>
-    <div class="mySlides fade">
-        <img src="https://raw.githubusercontent.com/dakshalfred/Crop-recommendation-analysis/main/images/specialization(2).jpg" alt="Image 2">
-    </div>
-    <div class="mySlides fade">
-        <img src="https://raw.githubusercontent.com/dakshalfred/Crop-recommendation-analysis/main/images/specialization(3).jpg" alt="Image 3">
-    </div>
-    <div class="mySlides fade">
-        <img src="https://raw.githubusercontent.com/dakshalfred/Crop-recommendation-analysis/main/images/specialization(4).jpg" alt="Image 4">
-    </div>
-    <div class="mySlides fade">
-        <img src="https://raw.githubusercontent.com/dakshalfred/Crop-recommendation-analysis/main/images/specialization(5).jpg" alt="Image 5">
-    </div>
-</div>
+# Preload images for better performance and resize them
+image_objects = []
+for url in image_urls:
+    try:
+        response = requests.get(url, timeout=5)  # Timeout to handle slow responses
+        if response.status_code == 200:
+            img = Image.open(BytesIO(response.content))
+            img_resized = resize_image(img)  # Resize the image
+            image_objects.append(img_resized)
+    except Exception as e:
+        st.write(f"Error loading image from {url}: {e}")
 
-<script>
-    let slideIndex = 0;
-    showSlides();
+# Slideshow logic (for now it's using HTML + JavaScript for background images)
+if image_objects:
+    # Add custom CSS and JavaScript for the background slideshow
+    st.markdown(
+        """
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            .slideshow-container {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                z-index: -1; /* Ensures it's behind the main content */
+            }
+            .mySlides {
+                display: none;
+                position: absolute;
+                width: 100%;
+                height: 100%;
+            }
+            .mySlides img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover; /* Ensures the image fills the screen */
+            }
+            .fade {
+                animation-name: fade;
+                animation-duration: 1s; /* Smooth fade transition */
+            }
+            @keyframes fade {
+                from {opacity: 0.4} 
+                to {opacity: 1}
+            }
+        </style>
 
-    function showSlides() {
-        let slides = document.getElementsByClassName("mySlides");
-        for (let i = 0; i < slides.length; i++) {
-            slides[i].style.display = "none";  
-        }
-        slideIndex++;
-        if (slideIndex > slides.length) {slideIndex = 1}    
-        slides[slideIndex-1].style.display = "block";  
-        setTimeout(showSlides, 6000); // 6 seconds per slide
-    }
-</script>
-"""
+        <div class="slideshow-container">
+            <div class="mySlides fade">
+                <img src="https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP" alt="Image 1">
+            </div>
+            <div class="mySlides fade">
+                <img src="https://drive.google.com/uc?id=1GYJzuUbH7-_R8B8z6CGhyxSHISH4Hapl" alt="Image 2">
+            </div>
+            <div class="mySlides fade">
+                <img src="https://drive.google.com/uc?id=1SNgVLNTH8o9qvT-_O4NI2QGQxNNd6H5x" alt="Image 3">
+            </div>
+            <div class="mySlides fade">
+                <img src="https://drive.google.com/uc?id=1uzESAjpQ86bQmreq0A8TQY1j2jGh4LUb" alt="Image 4">
+            </div>
+            <div class="mySlides fade">
+                <img src="https://drive.google.com/uc?id=1kOaD8pUB7-dLTYNXATO8a1FvFyLUeNFY" alt="Image 5">
+            </div>
+        </div>
 
-# Embed the HTML for the slideshow
-st.markdown(slideshow_html, unsafe_allow_html=True)
+        <script>
+            let slideIndex = 0;
+            showSlides();
 
-# Add the rest of your code for crop recommendation functionality
+            function showSlides() {
+                let slides = document.getElementsByClassName("mySlides");
+                for (let i = 0; i < slides.length; i++) {
+                    slides[i].style.display = "none";  
+                }
+                slideIndex++;
+                if (slideIndex > slides.length) {slideIndex = 1}    
+                slides[slideIndex-1].style.display = "block";  
+                setTimeout(showSlides, 6000); // 6 seconds per slide
+            }
+        </script>
+        """,
+        unsafe_allow_html=True,
+    )
+else:
+    st.write("No images could be loaded.")
+
+# Option selection for the user
 option = st.selectbox("Choose an option", ["Get Crop Information", "Get Region Information"])
 st.write("Your selected option is:", option)
 
 # Function to load data from Google Drive link
 def load_data_from_drive(link):
+    # Extracting file ID from Google Drive URL
     file_id = link.split('/')[-2]
     url = f'https://drive.google.com/uc?id={file_id}'
     response = requests.get(url)
     return pd.read_csv(io.StringIO(response.text))
 
-# Load dataset (Google Drive URL)
-data_url = 'https://drive.google.com/file/d/1XYvWxsYyEKkFt7VH1roZuBMtQHH8MnvG/view?usp=drive_link'
+# Load dataset from Google Drive (use the actual Google Drive link here)
+data_url = 'https://drive.google.com/file/d/1XYvWxsYyEKkFt7VH1roZuBMtQHH8MnvG/view?usp=drive_link'  # Replace with your Google Drive link
 data = load_data_from_drive(data_url)
 
-# Data preprocessing
-data.dropna(subset=['Crop', 'Production', 'Area'], inplace=True)
+# Data Preprocessing
+data.dropna(subset=['Crop', 'Production', 'Area'], inplace=True)  # Removing NaN values in important columns
 
-# Option 1: Get Region Information
+# Option 1: Get Region Information (State -> District -> Season)
 if option == "Get Region Information":
+    # State selection
     states = data['State'].unique()
     state = st.selectbox("Choose State", states)
+
+    # District selection based on state
     districts = data[data['State'] == state]['District'].unique()
     district = st.selectbox("Choose District", districts)
+
+    # Season selection based on district
     seasons = data[(data['State'] == state) & (data['District'] == district)]['Season'].unique()
     season = st.selectbox("Select Season", seasons)
 
-    filtered_data_region = data[(data['State'] == state) & (data['District'] == district) & (data['Season'] == season)]
+    # Filter data based on the selected state, district, and season
+    filtered_data_region = data[(data['State'] == state) & 
+                                 (data['District'] == district) & 
+                                 (data['Season'] == season)]
+
+    # Display data in tabular format
     st.subheader("Crops Information for the selected Region and Season")
     st.dataframe(filtered_data_region)
 
-    # Option to show graph
+    # Option to switch between tabular and graphical format
     show_graph = st.checkbox("Show Graph")
     if show_graph:
         st.subheader("Graphical Representation")
@@ -154,19 +183,25 @@ if option == "Get Region Information":
         sns.barplot(data=filtered_data_region, x="Crop", y="Area", ax=ax)
         st.pyplot(fig)
 
-# Option 2: Get Crop Information
+# Option 2: Get Crop Information (Crop -> State)
 elif option == "Get Crop Information":
+    # Crop selection
     crops = data['Crop'].unique()
     crop = st.selectbox("Choose Crop", crops)
+
+    # State selection based on crop
     states_for_crop = data[data['Crop'] == crop]['State'].unique()
     state_for_crop = st.selectbox("Choose State", states_for_crop.tolist() + ["All of the above"])
 
     if state_for_crop != "All of the above":
+        # Filter data based on the selected crop and state
         filtered_data_crop = data[(data['Crop'] == crop) & (data['State'] == state_for_crop)]
+
+        # Display data in tabular format
         st.subheader(f"Data for {crop} in {state_for_crop}")
         st.dataframe(filtered_data_crop)
 
-        # Option to show graph
+        # Option to switch between tabular and graphical format
         show_graph_crop = st.checkbox("Show Graph")
         if show_graph_crop:
             st.subheader("Graphical Representation")
