@@ -62,15 +62,6 @@ st.markdown(
         padding: 20px;
         border-radius: 10px;
     }
-
-    /* Adjust the content position */
-    .main-content {
-        position: relative;
-        z-index: 1;
-        color: white;
-        padding: 20px;
-        border-radius: 10px;
-    }
     </style>
     """,
     unsafe_allow_html=True,
