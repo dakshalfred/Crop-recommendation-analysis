@@ -27,7 +27,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Using single background image
+# Add background image and semi-transparent overlay using Streamlit markdown
 st.markdown(
     """
     <style>
@@ -37,6 +37,15 @@ st.markdown(
         background-position: center;
         background-attachment: fixed;
         background-repeat: no-repeat;
+    }
+
+    /* Semi-transparent overlay */
+    .stApp {
+        background: rgba(0, 0, 0, 0.1);  /* Black background with alpha transparency */
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        height: 100vh;
     }
     </style>
     """,
@@ -60,7 +69,6 @@ data_url = 'https://drive.google.com/file/d/1XYvWxsYyEKkFt7VH1roZuBMtQHH8MnvG/vi
 data = load_data_from_drive(data_url)
 
 # Data Preprocessing
-# Data Preprocessing
 if 'Crop' in data.columns and 'Production' in data.columns and 'Area' in data.columns:
     data.dropna(subset=['Crop', 'Production', 'Area'], inplace=True)  # Removing NaN values in important columns
 else:
@@ -81,7 +89,7 @@ if option == "Get Region Information":
     season = st.selectbox("Select Season", seasons)
 
     # Filter data based on the selected state, district, and season
-    filtered_data_region = data[(data['State'] == state) & 
+    filtered_data_region = data[(data['State'] == state) &
                                  (data['District'] == district) & 
                                  (data['Season'] == season)]
 
@@ -92,20 +100,10 @@ if option == "Get Region Information":
     # Option to switch between tabular and graphical format
     show_graph = st.checkbox("Show Graph")
     if show_graph:
-        # Limit number of crops to display using a slider
-        num_crops_to_display = st.slider('Select the number of crops to display', min_value=5, max_value=50, step=5)
-        filtered_data_region_limited = filtered_data_region.head(num_crops_to_display)
-
-        st.subheader(f"Top {num_crops_to_display} Crops Information for the selected Region and Season")
-        st.dataframe(filtered_data_region_limited)
-
-        # Create the barplot with rotated labels
         st.subheader("Graphical Representation")
-        fig, ax = plt.subplots(figsize=(12, 8))  # Increase the figure size for better readability
-        sns.barplot(data=filtered_data_region_limited, x="Crop", y="Area", ax=ax)
-
-        # Rotate x-axis labels for better readability
-        plt.xticks(rotation=90)
+        fig, ax = plt.subplots(figsize=(9, 6))  # Adjust the size of the chart (60% of the original)
+        sns.barplot(data=filtered_data_region, x="Crop", y="Area", ax=ax)
+        fig.set_size_inches(9 * 0.6, 6 * 0.6)  # Resize chart to 60% of original size
         st.pyplot(fig)
 
 # Option 2: Get Crop Information (Crop -> State)
@@ -129,22 +127,11 @@ elif option == "Get Crop Information":
         # Option to switch between tabular and graphical format
         show_graph_crop = st.checkbox("Show Graph")
         if show_graph_crop:
-            # Limit number of crops to display using a slider
-            num_crops_to_display_crop = st.slider('Select the number of crops to display', min_value=5, max_value=50, step=5)
-            filtered_data_crop_limited = filtered_data_crop.head(num_crops_to_display_crop)
-
-            st.subheader(f"Top {num_crops_to_display_crop} Data for {crop} in {state_for_crop}")
-            st.dataframe(filtered_data_crop_limited)
-
-            # Create the barplot with rotated labels
             st.subheader("Graphical Representation")
-            fig, ax = plt.subplots(figsize=(12, 8))  # Increase the figure size for better readability
-            sns.barplot(data=filtered_data_crop_limited, x="District", y="Area", ax=ax)
-
-            # Rotate x-axis labels for better readability
-            plt.xticks(rotation=90)
+            fig, ax = plt.subplots(figsize=(9, 6))  # Adjust the size of the chart (60% of the original)
+            sns.barplot(data=filtered_data_crop, x="District", y="Area", ax=ax)
+            fig.set_size_inches(9 * 0.6, 6 * 0.6)  # Resize chart to 60% of original size
             st.pyplot(fig)
-
     else:
         # Filter data for all states for the selected crop
         filtered_data_crop_all_states = data[data['Crop'] == crop]
@@ -156,19 +143,8 @@ elif option == "Get Crop Information":
         # Option to switch between tabular and graphical format
         show_graph_crop_all_states = st.checkbox("Show Graph for All States")
         if show_graph_crop_all_states:
-            # Limit number of crops to display using a slider
-            num_crops_to_display_crop_all_states = st.slider('Select the number of crops to display', min_value=5, max_value=50, step=5)
-            filtered_data_crop_all_states_limited = filtered_data_crop_all_states.head(num_crops_to_display_crop_all_states)
-
-            st.subheader(f"Top {num_crops_to_display_crop_all_states} Data for {crop} across all states")
-            st.dataframe(filtered_data_crop_all_states_limited)
-
-            # Create the barplot with rotated labels
             st.subheader("Graphical Representation")
-            fig, ax = plt.subplots(figsize=(12, 8))  # Increase the figure size for better readability
-            sns.barplot(data=filtered_data_crop_all_states_limited, x="State", y="Area", ax=ax)
-
-            # Rotate x-axis labels for better readability
-            plt.xticks(rotation=90)
+            fig, ax = plt.subplots(figsize=(9, 6))  # Adjust the size of the chart (60% of the original)
+            sns.barplot(data=filtered_data_crop_all_states, x="State", y="Area", ax=ax)
+            fig.set_size_inches(9 * 0.6, 6 * 0.6)  # Resize chart to 60% of original size
             st.pyplot(fig)
-
