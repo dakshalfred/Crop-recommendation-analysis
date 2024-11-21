@@ -28,7 +28,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Apply background image and ensure overlay for better text readability
+# Apply background image and text readability
 st.markdown(
     """
     <style>
@@ -41,21 +41,7 @@ st.markdown(
         background-repeat: no-repeat;
     }
 
-    /* Apply overlay to make the text readable */
-    .stApp {
-        position: relative;
-    }
-    .stApp:before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);  /* Dark overlay */
-        z-index: 1;
-    }
-    /* Ensure text stays above overlay */
+    /* Make sure the content has proper contrast for visibility */
     .main-content {
         position: relative;
         z-index: 2;
@@ -68,7 +54,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Wrap all content inside the overlay style
+# Wrap content inside the main-content div
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
 
 # Dropdowns and other inputs
