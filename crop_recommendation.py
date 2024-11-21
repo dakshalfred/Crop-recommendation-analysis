@@ -23,7 +23,7 @@ st.markdown(
     """
     <style>
     body {
-        background-image: url('https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP');
+        background-image: url('https://github.com/dakshalfred/Crop-recommendation-analysis/raw/main/images/specialization(2).jpg');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
