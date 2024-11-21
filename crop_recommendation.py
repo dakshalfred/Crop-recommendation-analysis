@@ -32,14 +32,14 @@ st.markdown(
 st.markdown(
     """
     <style>
-    /* Ensure the background image covers the entire viewport */
+    /* Background image settings */
     .stApp {
         background-image: url('https://github.com/dakshalfred/Crop-recommendation-analysis/raw/main/images/specialization(2).jpg');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
         background-repeat: no-repeat;
-        height: 100vh; /* Ensure full height */
+        height: 100vh;  /* Ensure full height */
     }
 
     /* Semi-transparent overlay behind the text */
@@ -50,11 +50,11 @@ st.markdown(
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);  /* Black with 50% transparency */
-        z-index: -1;  /* Ensure the overlay is behind the text */
+        background-color: rgba(0, 0, 0, 0.1);  /* Black with 10% transparency */
+        z-index: 0;  /* Ensure the overlay is behind the text */
     }
 
-    /* Ensure the text content appears above the overlay */
+    /* Ensure text content appears above the overlay */
     .main-content {
         position: relative;
         z-index: 1;
