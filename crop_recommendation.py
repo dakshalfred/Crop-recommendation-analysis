@@ -50,7 +50,7 @@ st.markdown(
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.1);  /* Black with 10% transparency */
+        background-color: rgba(255, 255, 255, 0.3);  /* Black with 10% transparency */
         z-index: 0;  /* Ensure the overlay is behind the text */
     }
 
