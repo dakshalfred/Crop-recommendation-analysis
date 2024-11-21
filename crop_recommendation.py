@@ -60,9 +60,6 @@ def load_data_from_drive(link):
 # Streamlit Interface
 st.title("Crop Recommendation System")
 
-# Option selection for the user
-option = st.selectbox("Choose an option", ["Get Crop Information", "Get Region Information"])
-
 # Load dataset from Google Drive (use the actual Google Drive link here)
 data_url = 'https://drive.google.com/file/d/1XYvWxsYyEKkFt7VH1roZuBMtQHH8MnvG/view?usp=drive_link'  # Replace with your Google Drive link
 data = load_data_from_drive(data_url)
