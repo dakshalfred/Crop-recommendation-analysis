@@ -28,11 +28,11 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Add background image with full-screen semi-transparent layer for text visibility
+# Add background image and semi-transparent overlay
 st.markdown(
     """
     <style>
-    /* Apply background image */
+    /* Background image settings */
     .stApp {
         background-image: url('https://github.com/dakshalfred/Crop-recommendation-analysis/raw/main/images/specialization(2).jpg');
         background-size: cover;
@@ -42,18 +42,19 @@ st.markdown(
         height: 100vh;  /* Ensure full height */
     }
 
-    /* Overlay semi-transparent layer to cover full screen */
-    .full-screen-overlay {
+    /* Semi-transparent overlay to improve text visibility */
+    .stApp::before {
+        content: '';
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);  /* Black background with 50% transparency */
-        z-index: 1;  /* Make sure the overlay is behind the content */
+        background-color: rgba(0, 0, 0, 0.5);  /* Black with 50% transparency */
+        z-index: 1;  /* Ensure overlay is behind text content */
     }
 
-    /* Make sure the content has higher z-index */
+    /* Ensure text content appears above the overlay */
     .main-content {
         position: relative;
         z-index: 2;
@@ -66,10 +67,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Add the full-screen semi-transparent overlay
-st.markdown('<div class="full-screen-overlay"></div>', unsafe_allow_html=True)
-
-# Wrap content inside the main-content div
+# Add the main content wrapper
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
 
 # Dropdowns and other inputs
@@ -165,4 +163,5 @@ elif option == "Get Crop Information":
 
 # Close the content div tag
 st.markdown('</div>', unsafe_allow_html=True)
+
 
