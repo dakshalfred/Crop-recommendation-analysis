@@ -11,14 +11,24 @@ import streamlit as st
 import requests
 import pandas as pd
 import io
-from PIL import Image
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Add custom HTML for title and description
+# Title of the app
 st.title("Crop Recommendation System")
-st.markdown("Welcome to the Crop Recommendation Analysis tool! 🌾")
-# Add this to your Streamlit app
+
+# Add custom HTML for title and description
+st.markdown(
+    """
+    <h1 style="text-align:center;font-size:25px;padding:20px;">
+        Welcome to the Crop Recommendation Analysis tool! 🌾  
+    This app helps you determine the best crops for specific regions and seasons based on historical data.
+    </h1>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Add background image using CSS with overlay for better text readability
 st.markdown(
     """
     <style>
@@ -29,26 +39,21 @@ st.markdown(
         background-attachment: fixed;
         background-repeat: no-repeat;
     }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
 
-# Apply background image using CSS
-st.markdown(
-    """
-    <style>
-    /* Apply fullscreen background image */
-    .stApp {
-        background: url('https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
+    /* Overlay to make the text readable */
+    .main-content {
+        background-color: rgba(0, 0, 0, 0.5);  /* Dark overlay with 50% opacity */
+        color: white;  /* White text color */
+        padding: 20px;
+        border-radius: 10px;
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
+
+# Wrap all content inside the overlay style
+st.markdown('<div class="main-content">', unsafe_allow_html=True)
 
 # Dropdowns and other inputs
 option = st.selectbox("Choose an option", ["Get Crop Information", "Get Region Information"])
@@ -84,8 +89,8 @@ if option == "Get Region Information":
     season = st.selectbox("Select Season", seasons)
 
     # Filter data based on the selected state, district, and season
-    filtered_data_region = data[(data['State'] == state) &
-                                 (data['District'] == district) &
+    filtered_data_region = data[(data['State'] == state) & 
+                                 (data['District'] == district) & 
                                  (data['Season'] == season)]
 
     # Display data in tabular format
@@ -141,3 +146,5 @@ elif option == "Get Crop Information":
             sns.barplot(data=filtered_data_crop_all_states, x="State", y="Area", ax=ax)
             st.pyplot(fig)
 
+# Close the content div tag
+st.markdown('</div>', unsafe_allow_html=True)
