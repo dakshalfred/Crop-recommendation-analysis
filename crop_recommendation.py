@@ -12,7 +12,6 @@ import requests
 import pandas as pd
 import io
 from PIL import Image
-from io import BytesIO
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -22,18 +21,19 @@ st.markdown(
     """
     <h1 style="text-align:center;font-size:25px;padding:20px;">
         Welcome to the Crop Recommendation Analysis tool! 🌾  
-    This app helps you determine the best crops for specific regions and seasons based on historical data.
+        This app helps you determine the best crops for specific regions and seasons based on historical data.
     </h1>
     """,
     unsafe_allow_html=True,
 )
 
-# Using single background image
+# Apply background image using CSS
 st.markdown(
     """
     <style>
-    body {
-        background-image: url('https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP');
+    /* Apply fullscreen background image */
+    .stApp {
+        background: url('https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -43,7 +43,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-
 # Dropdowns and other inputs
 option = st.selectbox("Choose an option", ["Get Crop Information", "Get Region Information"])
 st.write("Your selected option is:", option)
@@ -52,14 +51,11 @@ st.write("Your selected option is:", option)
 def load_data_from_drive(link):
     # Extracting file ID from Google Drive URL
     file_id = link.split('/')[-2]
-    url = f'https://drive.google.com/uc?id=1XYvWxsYyEKkFt7VH1roZuBMtQHH8MnvG'
+    url = f'https://drive.google.com/uc?id={file_id}'
     response = requests.get(url)
     return pd.read_csv(io.StringIO(response.text))
 
-# Streamlit Interface
-st.title("Crop Recommendation System")
-
-# Load dataset from Google Drive (use the actual Google Drive link here)
+# Load dataset from Google Drive
 data_url = 'https://drive.google.com/file/d/1XYvWxsYyEKkFt7VH1roZuBMtQHH8MnvG/view?usp=drive_link'  # Replace with your Google Drive link
 data = load_data_from_drive(data_url)
 
@@ -137,3 +133,4 @@ elif option == "Get Crop Information":
             fig, ax = plt.subplots()
             sns.barplot(data=filtered_data_crop_all_states, x="State", y="Area", ax=ax)
             st.pyplot(fig)
+
