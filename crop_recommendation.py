@@ -57,7 +57,7 @@ def load_data_from_drive(link):
     return pd.read_csv(io.StringIO(response.text))
 
 # Load dataset from Google Drive (use the actual Google Drive link here)
-data_url = 'https://drive.google.com/file/d/1XYvWxsYyEKkFt7VH1roZuBMtQHH8MnvG/view?usp=drive_link'  # Replace with your Google Drive link
+data_url = 'https://drive.google.com/file/d/1XYvWxsYyEKkFt7VH1roZuBMtQHH8MnvG/view?usp=sharing'  # Replace with your Google Drive link
 data = load_data_from_drive(data_url)
 
 # Data Preprocessing
