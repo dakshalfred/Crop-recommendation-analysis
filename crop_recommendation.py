@@ -28,11 +28,12 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Add background image using CSS with overlay for better text readability
+# Add background image using CSS and ensure overlay for better text readability
 st.markdown(
     """
     <style>
-    body {
+    /* Apply background image */
+    .stApp {
         background-image: url('https://github.com/dakshalfred/Crop-recommendation-analysis/raw/main/images/specialization(2).jpg');
         background-size: cover;
         background-position: center;
@@ -40,10 +41,25 @@ st.markdown(
         background-repeat: no-repeat;
     }
 
-    /* Overlay to make the text readable */
+    /* Apply overlay to make the text readable */
+    .stApp {
+        position: relative;
+    }
+    .stApp:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);  /* Dark overlay */
+        z-index: 1;
+    }
+    /* Ensure text stays above overlay */
     .main-content {
-        background-color: rgba(0, 0, 0, 0.5);  /* Dark overlay with 50% opacity */
-        color: white;  /* White text color */
+        position: relative;
+        z-index: 2;
+        color: white;
         padding: 20px;
         border-radius: 10px;
     }
