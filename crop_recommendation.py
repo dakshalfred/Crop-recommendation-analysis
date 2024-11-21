@@ -125,7 +125,7 @@ if option == "Get Region Information":
     show_graph = st.checkbox("Show Graph")
     if show_graph:
         st.subheader("Graphical Representation")
-        fig, ax = plt.subplots(figsize=(4 * 0.9, 6 * 0.9))  # Resize chart to 60% of original size
+        fig, ax = plt.subplots(figsize=(9 * 0.6, 6 * 0.6))  # Resize chart to 60% of original size
         sns.barplot(data=filtered_data_region, x="Crop", y="Area", ax=ax)
         
         # Rotate x-axis labels to prevent overlap
@@ -166,7 +166,7 @@ if option == "Get Crop Information":
     show_graph_crop = st.checkbox("Show Graph")
     if show_graph_crop:
         st.subheader("Graphical Representation")
-        fig, ax = plt.subplots(figsize=(4 * 0.9, 6 * 0.9))  # Resize chart to 60% of original size
+        fig, ax = plt.subplots(figsize=(9 * 0.6, 6 * 0.6))  # Resize chart to 60% of original size
         sns.barplot(data=filtered_data_crop, x="District", y="Area", ax=ax)
         
         # Rotate x-axis labels to prevent overlap
