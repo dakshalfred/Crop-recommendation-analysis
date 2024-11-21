@@ -17,12 +17,18 @@ import seaborn as sns
 
 # Add custom HTML for title and description
 st.title("Crop Recommendation System")
+# Add this to your Streamlit app
 st.markdown(
     """
-    <h1 style="text-align:center;font-size:25px;padding:20px;">
-        Welcome to the Crop Recommendation Analysis tool! 🌾  
-        This app helps you determine the best crops for specific regions and seasons based on historical data.
-    </h1>
+    <style>
+    body {
+        background-image: url('https://drive.google.com/uc?id=1m7SMWjsST26U2pbz84TJ8SfTtC-3GrkP');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+    </style>
     """,
     unsafe_allow_html=True,
 )
