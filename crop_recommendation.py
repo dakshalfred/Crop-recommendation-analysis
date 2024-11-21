@@ -40,6 +40,7 @@ st.markdown(
         background-attachment: fixed;
         background-repeat: no-repeat;
         height: 100vh;  /* Ensure full height */
+        overflow: hidden;
     }
 
     /* Semi-transparent overlay behind the text */
@@ -51,7 +52,7 @@ st.markdown(
         width: 100%;
         height: 100%;
         background-color: rgba(0, 0, 0, 0.5);  /* Black with 50% transparency */
-        z-index: 0;  /* Ensure the overlay is behind the text */
+        z-index: -1;  /* Ensure the overlay is behind the text */
     }
 
     /* Ensure text content appears above the overlay */
@@ -165,3 +166,4 @@ if option == "Get Crop Information":
         plt.tight_layout()  # Adjust layout for better spacing
 
         st.pyplot(fig)
+
