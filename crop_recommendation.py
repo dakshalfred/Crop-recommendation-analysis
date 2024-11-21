@@ -17,6 +17,7 @@ import seaborn as sns
 
 # Add custom HTML for title and description
 st.title("Crop Recommendation System")
+st.markdown("Welcome to the Crop Recommendation Analysis tool! 🌾")
 # Add this to your Streamlit app
 st.markdown(
     """
