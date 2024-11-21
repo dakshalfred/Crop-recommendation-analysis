@@ -28,7 +28,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Apply background image and text readability
+# Add background image with semi-transparent layer for text visibility
 st.markdown(
     """
     <style>
@@ -41,13 +41,14 @@ st.markdown(
         background-repeat: no-repeat;
     }
 
-    /* Make sure the content has proper contrast for visibility */
+    /* Overlay semi-transparent layer to make text more visible */
     .main-content {
         position: relative;
         z-index: 2;
         color: white;
         padding: 20px;
         border-radius: 10px;
+        background-color: rgba(0, 0, 0, 0.5);  /* Black background with 50% transparency */
     }
     </style>
     """,
