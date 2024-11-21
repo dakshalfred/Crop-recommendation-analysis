@@ -28,7 +28,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Add background image with semi-transparent layer for text visibility
+# Add background image with full-screen semi-transparent layer for text visibility
 st.markdown(
     """
     <style>
@@ -39,21 +39,35 @@ st.markdown(
         background-position: center;
         background-attachment: fixed;
         background-repeat: no-repeat;
+        height: 100vh;  /* Ensure full height */
     }
 
-    /* Overlay semi-transparent layer to make text more visible */
+    /* Overlay semi-transparent layer to cover full screen */
+    .full-screen-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);  /* Black background with 50% transparency */
+        z-index: 1;  /* Make sure the overlay is behind the content */
+    }
+
+    /* Make sure the content has higher z-index */
     .main-content {
         position: relative;
         z-index: 2;
         color: white;
         padding: 20px;
         border-radius: 10px;
-        background-color: rgba(0, 0, 0, 0.5);  /* Black background with 50% transparency */
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
+
+# Add the full-screen semi-transparent overlay
+st.markdown('<div class="full-screen-overlay"></div>', unsafe_allow_html=True)
 
 # Wrap content inside the main-content div
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
@@ -151,3 +165,4 @@ elif option == "Get Crop Information":
 
 # Close the content div tag
 st.markdown('</div>', unsafe_allow_html=True)
+
