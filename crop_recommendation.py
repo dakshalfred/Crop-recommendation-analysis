@@ -166,7 +166,7 @@ if option == "Get Crop Information":
     show_graph_crop = st.checkbox("Show Graph")
     if show_graph_crop:
         st.subheader("Graphical Representation")
-        fig, ax = plt.subplots(figsize=(9 * 0.6, 6 * 0.6))  # Resize chart to 60% of original size
+        fig, ax = plt.subplots(figsize=(9 * 0.3, 6 * 0.3))  # Resize chart to 60% of original size
         sns.barplot(data=filtered_data_crop, x="District", y="Area", ax=ax)
         
         # Rotate x-axis labels to prevent overlap
