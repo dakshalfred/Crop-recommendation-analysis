@@ -28,7 +28,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Add background image and semi-transparent overlay
+# Add background image and semi-transparent overlay behind the text
 st.markdown(
     """
     <style>
@@ -42,7 +42,7 @@ st.markdown(
         height: 100vh;  /* Ensure full height */
     }
 
-    /* Semi-transparent overlay to improve text visibility */
+    /* Semi-transparent overlay behind the text */
     .stApp::before {
         content: '';
         position: absolute;
@@ -51,13 +51,13 @@ st.markdown(
         width: 100%;
         height: 100%;
         background-color: rgba(0, 0, 0, 0.5);  /* Black with 50% transparency */
-        z-index: 1;  /* Ensure overlay is behind text content */
+        z-index: 0;  /* Ensure the overlay is behind the text */
     }
 
     /* Ensure text content appears above the overlay */
     .main-content {
         position: relative;
-        z-index: 2;
+        z-index: 1;
         color: white;
         padding: 20px;
         border-radius: 10px;
@@ -163,5 +163,3 @@ elif option == "Get Crop Information":
 
 # Close the content div tag
 st.markdown('</div>', unsafe_allow_html=True)
-
-
