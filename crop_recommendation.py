@@ -60,7 +60,11 @@ data_url = 'https://drive.google.com/file/d/1XYvWxsYyEKkFt7VH1roZuBMtQHH8MnvG/vi
 data = load_data_from_drive(data_url)
 
 # Data Preprocessing
-data.dropna(subset=['Crop', 'Production', 'Area'], inplace=True)  # Removing NaN values in important columns
+# Data Preprocessing
+if 'Crop' in data.columns and 'Production' in data.columns and 'Area' in data.columns:
+    data.dropna(subset=['Crop', 'Production', 'Area'], inplace=True)  # Removing NaN values in important columns
+else:
+    st.warning("Columns 'Crop', 'Production', or 'Area' are missing from the dataset.")
 
 # Option 1: Get Region Information (State -> District -> Season)
 if option == "Get Region Information":
