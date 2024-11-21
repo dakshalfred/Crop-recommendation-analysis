@@ -28,7 +28,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Add background image using CSS and ensure overlay for better text readability
+# Apply background image and ensure overlay for better text readability
 st.markdown(
     """
     <style>
