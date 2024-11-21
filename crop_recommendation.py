@@ -42,7 +42,6 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-st.write("If you see a background image, it means the image rendering works.")
 
 
 # Dropdowns and other inputs
