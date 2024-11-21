@@ -118,5 +118,50 @@ if option == "Get Region Information":
         st.subheader("Graphical Representation")
         fig, ax = plt.subplots(figsize=(9 * 0.6, 6 * 0.6))  # Resize chart to 60% of original size
         sns.barplot(data=filtered_data_region, x="Crop", y="Area", ax=ax)
+        
+        # Rotate x-axis labels to prevent overlap
+        plt.xticks(rotation=45, ha="right")
+        plt.tight_layout()  # Adjust layout for better spacing
+
         st.pyplot(fig)
 
+# Option 2: Get Crop Information (Crop -> State -> District -> Season)
+if option == "Get Crop Information":
+    # Crop selection
+    crops = data['Crop'].unique()
+    crop = st.selectbox("Choose Crop", crops)
+
+    # State selection based on crop
+    states_for_crop = data[data['Crop'] == crop]['State'].unique()
+    state_for_crop = st.selectbox("Choose State", states_for_crop)
+
+    # District selection based on state
+    districts_for_crop = data[data['State'] == state_for_crop]['District'].unique()
+    district_for_crop = st.selectbox("Choose District", districts_for_crop)
+
+    # Season selection based on district
+    seasons_for_crop = data[(data['State'] == state_for_crop) & (data['District'] == district_for_crop)]['Season'].unique()
+    season_for_crop = st.selectbox("Select Season", seasons_for_crop)
+
+    # Filter data based on the selected crop, state, district, and season
+    filtered_data_crop = data[(data['Crop'] == crop) & 
+                               (data['State'] == state_for_crop) & 
+                               (data['District'] == district_for_crop) & 
+                               (data['Season'] == season_for_crop)]
+
+    # Display data in tabular format
+    st.subheader("Crops Information for the selected Crop, State, District, and Season")
+    st.dataframe(filtered_data_crop)
+
+    # Option to switch between tabular and graphical format
+    show_graph_crop = st.checkbox("Show Graph")
+    if show_graph_crop:
+        st.subheader("Graphical Representation")
+        fig, ax = plt.subplots(figsize=(9 * 0.6, 6 * 0.6))  # Resize chart to 60% of original size
+        sns.barplot(data=filtered_data_crop, x="District", y="Area", ax=ax)
+        
+        # Rotate x-axis labels to prevent overlap
+        plt.xticks(rotation=45, ha="right")
+        plt.tight_layout()  # Adjust layout for better spacing
+
+        st.pyplot(fig)
