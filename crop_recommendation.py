@@ -28,7 +28,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# using single image
+# Using single background image
 st.markdown(
     """
     <style>
@@ -50,72 +50,79 @@ st.write("Your selected option is:", option)
 
 # Function to load data from Google Drive link
 def load_data_from_drive(link):
-    # Extracting file ID from Google Drive URL
-    file_id = link.split('/')[-2]
-    url = f'https://drive.google.com/uc?id={file_id}'
-    response = requests.get(url)
-    return pd.read_csv(io.StringIO(response.text))
+    try:
+        # Extracting file ID from Google Drive URL
+        file_id = link.split('/')[-2]
+        url = f'https://drive.google.com/uc?id={file_id}'
+        response = requests.get(url)
+        if response.status_code != 200:
+            st.error("Failed to fetch data from the provided Google Drive link.")
+            return pd.DataFrame()
+        
+        # Reading the CSV data
+        data = pd.read_csv(io.StringIO(response.text))
+        st.success("Data loaded successfully!")
+        return data
+    except Exception as e:
+        st.error(f"Error loading data: {e}")
+        return pd.DataFrame()
 
-# Load dataset from Google Drive (use the actual Google Drive link here)
-data_url = 'https://drive.google.com/uc?id=1XYvWxsYyEKkFt7VH1roZuBMtQHH8MnvG'  # Replace with your Google Drive link
+# Load dataset from Google Drive
+data_url = 'https://drive.google.com/uc?id=1XYvWxsYyEKkFt7VH1roZuBMtQHH8MnvG'
 data = load_data_from_drive(data_url)
 
-# Data Preprocessing
-data.dropna(subset=['Crop', 'Production', 'Area'], inplace=True)  # Removing NaN values in important columns
+# Verify the dataset and required columns
+required_columns = ['Crop', 'Production', 'Area', 'State', 'District', 'Season']
+if not all(col in data.columns for col in required_columns):
+    missing_columns = [col for col in required_columns if col not in data.columns]
+    st.error(f"Missing required columns in the dataset: {missing_columns}")
+else:
+    # Data Preprocessing
+    data.dropna(subset=['Crop', 'Production', 'Area'], inplace=True)
 
-# Option 1: Get Region Information (State -> District -> Season)
-if option == "Get Region Information":
-    # State selection
-    states = data['State'].unique()
-    state = st.selectbox("Choose State", states)
+    # Option 1: Get Region Information (State -> District -> Season)
+    if option == "Get Region Information":
+        states = data['State'].unique()
+        state = st.selectbox("Choose State", states)
 
-    # District selection based on state
-    districts = data[data['State'] == state]['District'].unique()
-    district = st.selectbox("Choose District", districts)
+        districts = data[data['State'] == state]['District'].unique()
+        district = st.selectbox("Choose District", districts)
 
-    # Season selection based on district
-    seasons = data[(data['State'] == state) & (data['District'] == district)]['Season'].unique()
-    season = st.selectbox("Select Season", seasons)
+        seasons = data[(data['State'] == state) & (data['District'] == district)]['Season'].unique()
+        season = st.selectbox("Select Season", seasons)
 
-    # Filter data based on the selected state, district, and season
-    filtered_data_region = data[(data['State'] == state) & 
-                                 (data['District'] == district) & 
-                                 (data['Season'] == season)]
+        filtered_data_region = data[(data['State'] == state) & 
+                                     (data['District'] == district) & 
+                                     (data['Season'] == season)]
 
-    # Display data in tabular format
-    st.subheader("Crops Information for the selected Region and Season")
-    st.dataframe(filtered_data_region)
+        st.subheader("Crops Information for the selected Region and Season")
+        st.dataframe(filtered_data_region)
 
-    # Option to switch between tabular and graphical format
-    show_graph = st.checkbox("Show Graph")
-    if show_graph:
-        st.subheader("Graphical Representation")
-        fig, ax = plt.subplots()
-        sns.barplot(data=filtered_data_region, x="Crop", y="Area", ax=ax)
-        st.pyplot(fig)
-
-# Option 2: Get Crop Information (Crop -> State)
-elif option == "Get Crop Information":
-    # Crop selection
-    crops = data['Crop'].unique()
-    crop = st.selectbox("Choose Crop", crops)
-
-    # State selection based on crop
-    states_for_crop = data[data['Crop'] == crop]['State'].unique()
-    state_for_crop = st.selectbox("Choose State", states_for_crop.tolist() + ["All of the above"])
-
-    if state_for_crop != "All of the above":
-        # Filter data based on the selected crop and state
-        filtered_data_crop = data[(data['Crop'] == crop) & (data['State'] == state_for_crop)]
-
-        # Display data in tabular format
-        st.subheader(f"Data for {crop} in {state_for_crop}")
-        st.dataframe(filtered_data_crop)
-
-        # Option to switch between tabular and graphical format
-        show_graph_crop = st.checkbox("Show Graph")
-        if show_graph_crop:
+        show_graph = st.checkbox("Show Graph")
+        if show_graph:
             st.subheader("Graphical Representation")
             fig, ax = plt.subplots()
-            sns.barplot(data=filtered_data_crop, x="District", y="Area", ax=ax)
+            sns.barplot(data=filtered_data_region, x="Crop", y="Area", ax=ax)
             st.pyplot(fig)
+
+    # Option 2: Get Crop Information (Crop -> State)
+    elif option == "Get Crop Information":
+        crops = data['Crop'].unique()
+        crop = st.selectbox("Choose Crop", crops)
+
+        states_for_crop = data[data['Crop'] == crop]['State'].unique()
+        state_for_crop = st.selectbox("Choose State", states_for_crop.tolist() + ["All of the above"])
+
+        if state_for_crop != "All of the above":
+            filtered_data_crop = data[(data['Crop'] == crop) & (data['State'] == state_for_crop)]
+
+            st.subheader(f"Data for {crop} in {state_for_crop}")
+            st.dataframe(filtered_data_crop)
+
+            show_graph_crop = st.checkbox("Show Graph")
+            if show_graph_crop:
+                st.subheader("Graphical Representation")
+                fig, ax = plt.subplots()
+                sns.barplot(data=filtered_data_crop, x="District", y="Area", ax=ax)
+                st.pyplot(fig)
+
