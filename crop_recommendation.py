@@ -32,19 +32,26 @@ st.markdown(
 st.markdown(
     """
     <style>
-    /* Background image settings */
-    .stApp {
+    body {
         background-image: url('https://github.com/dakshalfred/Crop-recommendation-analysis/raw/main/images/specialization(2).jpg');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
         background-repeat: no-repeat;
-        height: 100vh;  /* Ensure full height */
-        overflow: hidden;
+        height: 100vh; /* Ensure full height */
+        color: white;
     }
 
     /* Semi-transparent overlay behind the text */
-    .stApp::before {
+    .main-content {
+        position: relative;
+        z-index: 1;
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .main-content::before {
         content: '';
         position: absolute;
         top: 0;
@@ -53,15 +60,6 @@ st.markdown(
         height: 100%;
         background-color: rgba(0, 0, 0, 0.5);  /* Black with 50% transparency */
         z-index: -1;  /* Ensure the overlay is behind the text */
-    }
-
-    /* Ensure text content appears above the overlay */
-    .main-content {
-        position: relative;
-        z-index: 1;
-        color: white;
-        padding: 20px;
-        border-radius: 10px;
     }
     </style>
     """,
@@ -167,3 +165,5 @@ if option == "Get Crop Information":
 
         st.pyplot(fig)
 
+# End the main content wrapper
+st.markdown('</div>', unsafe_allow_html=True)
