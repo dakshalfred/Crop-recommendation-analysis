@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Title of the app
-st.title("Crop Recommendation System")
+st.title("AgriSmart")
 
 # Add custom HTML for title and description
 st.markdown(
