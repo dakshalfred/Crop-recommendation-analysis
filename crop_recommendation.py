@@ -87,7 +87,7 @@ data_url = 'https://drive.google.com/file/d/1XYvWxsYyEKkFt7VH1roZuBMtQHH8MnvG/vi
 data = load_data_from_drive(data_url)
 
 # Data Preprocessing
-# Data Preprocessing
+# Drop rows with missing important columns
 if 'Crop' in data.columns and 'Production' in data.columns and 'Area' in data.columns:
     data.dropna(subset=['Crop', 'Production', 'Area'], inplace=True)  # Removing NaN values in important columns
 else:
