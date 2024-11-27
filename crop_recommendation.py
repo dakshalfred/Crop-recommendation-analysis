@@ -8,9 +8,7 @@ Original file is located at
 """
 
 import streamlit as st
-import requests
 import pandas as pd
-import io
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -67,21 +65,19 @@ st.markdown('<div class="main-content">', unsafe_allow_html=True)
 option = st.selectbox("Choose an option", ["Get Crop Information", "Get Region Information"])
 st.write("Your selected option is:", option)
 
-# Function to load data from Google Drive link
-def load_data_from_drive(link):
+# Function to load data directly using Google Drive file ID
+def load_data_from_drive(file_id):
     try:
-        file_id = link.split('/')[-2]
-        url = f'https://drive.google.com/uc?id={file_id}'
-        response = requests.get(url)
-        response.raise_for_status()
-        return pd.read_csv(io.StringIO(response.text))
+        url = f"https://drive.google.com/uc?export=download&id=1Im5rH0zhhyy--aSDxHnaf7jNjWNBQE7G"
+        data = pd.read_csv(url)
+        return data
     except Exception as e:
         st.error(f"Error loading dataset: {e}")
         return pd.DataFrame()
 
-# Load dataset
-data_url = 'https://drive.google.com/file/d/1Im5rH0zhhyy--aSDxHnaf7jNjWNBQE7G/view?usp=drive_link'
-data = load_data_from_drive(data_url)
+# Load dataset using the file ID
+file_id = "1Im5rH0zhhyy--aSDxHnaf7jNjWNBQE7G"  # Replace with your file ID
+data = load_data_from_drive(file_id)
 
 # Data Preprocessing
 if not data.empty:
@@ -142,4 +138,3 @@ if not data.empty:
                 st.pyplot(fig)
 else:
     st.error("Failed to load or process the dataset. Please check the dataset link or format.")
-
