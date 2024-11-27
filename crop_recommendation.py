@@ -20,13 +20,13 @@ st.markdown(
     """
     <h1 style="text-align:center;font-size:25px;padding:20px;">
         Welcome to the Crop Recommendation Analysis tool! 🌾  
-    This app helps you determine the best crops for specific regions and seasons based on historical data.
+        This app helps you determine the best crops for specific regions and seasons based on historical data.
     </h1>
     """,
     unsafe_allow_html=True,
 )
 
-# Add background image and semi-transparent overlay behind the text
+# Add background image and semi-transparent overlay
 st.markdown(
     """
     <style>
@@ -37,104 +37,84 @@ st.markdown(
         background-attachment: fixed;
         background-repeat: no-repeat;
     }
-    .stApp::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(255, 255, 255, 0.3);
-        z-index: 0;
-    }
-    .main-content {
-        position: relative;
-        z-index: 1;
-        color: black;
-        padding: 20px;
-        border-radius: 10px;
-    }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-st.markdown('<div class="main-content">', unsafe_allow_html=True)
-
-# Dropdown for options
-option = st.selectbox("Choose an option", ["Get Crop Information", "Get Region Information"])
-st.write("Your selected option is:", option)
-
-# Function to load data directly using Google Drive file ID
+# Function to load data directly from Google Drive using file ID
+@st.cache_data
 def load_data_from_drive(file_id):
+    url = f"https://drive.google.com/uc?id={file_id}"
     try:
-        url = f"https://drive.google.com/uc?export=download&id=1Im5rH0zhhyy--aSDxHnaf7jNjWNBQE7G"
         data = pd.read_csv(url)
         return data
     except Exception as e:
         st.error(f"Error loading dataset: {e}")
-        return pd.DataFrame()
+        return None
 
-# Load dataset using the file ID
+# Dataset Google Drive ID
 file_id = "1Im5rH0zhhyy--aSDxHnaf7jNjWNBQE7G"  # Replace with your file ID
 data = load_data_from_drive(file_id)
 
-# Data Preprocessing
-if not data.empty:
-    data.columns = data.columns.str.strip()  # Clean up column names
-    required_columns = ['Crop', 'State', 'District', 'Season', 'Area', 'Production']
-    missing_columns = [col for col in required_columns if col not in data.columns]
-
-    if missing_columns:
-        st.warning(f"The following required columns are missing: {', '.join(missing_columns)}")
+# Validate dataset loading and columns
+if data is not None:
+    if 'Crop' in data.columns and 'State' in data.columns and 'District' in data.columns:
+        # Drop missing values in critical columns
+        data.dropna(subset=['Crop', 'State', 'District'], inplace=True)
     else:
-        data.dropna(subset=required_columns, inplace=True)  # Drop rows with missing important columns
-
-        # Option 1: Get Region Information
-        if option == "Get Region Information":
-            states = data['State'].unique()
-            state = st.selectbox("Choose State", states)
-
-            districts = data[data['State'] == state]['District'].unique()
-            district = st.selectbox("Choose District", districts)
-
-            seasons = data[(data['State'] == state) & (data['District'] == district)]['Season'].unique()
-            season = st.selectbox("Select Season", seasons)
-
-            filtered_data_region = data[
-                (data['State'] == state) &
-                (data['District'] == district) &
-                (data['Season'] == season)
-            ]
-            st.subheader("Crops Information for the selected Region and Season")
-            st.dataframe(filtered_data_region)
-
-            if st.checkbox("Show Graph"):
-                fig, ax = plt.subplots(figsize=(12, 8))
-                sns.barplot(data=filtered_data_region, x="Crop", y="Area", ax=ax)
-                plt.xticks(rotation=90)
-                st.pyplot(fig)
-
-        # Option 2: Get Crop Information
-        elif option == "Get Crop Information":
-            crops = data['Crop'].unique()
-            crop = st.selectbox("Choose Crop", crops)
-
-            states_for_crop = data[data['Crop'] == crop]['State'].unique()
-            state_for_crop = st.selectbox("Choose State", ["All States"] + states_for_crop.tolist())
-
-            if state_for_crop == "All States":
-                filtered_data_crop = data[data['Crop'] == crop]
-            else:
-                filtered_data_crop = data[(data['Crop'] == crop) & (data['State'] == state_for_crop)]
-
-            st.subheader(f"Data for {crop} in {state_for_crop}")
-            st.dataframe(filtered_data_crop)
-
-            if st.checkbox("Show Graph"):
-                fig, ax = plt.subplots(figsize=(12, 8))
-                sns.barplot(data=filtered_data_crop, x="District", y="Area", ax=ax)
-                plt.xticks(rotation=90)
-                st.pyplot(fig)
+        st.error("Required columns ('Crop', 'State', 'District') are missing in the dataset.")
+        st.stop()
 else:
-    st.error("Failed to load or process the dataset. Please check the dataset link or format.")
+    st.error("Failed to load dataset.")
+    st.stop()
+
+# Dropdown to select options
+option = st.selectbox("Choose an option", ["Get Crop Information", "Get Region Information"])
+st.write(f"Your selected option is: {option}")
+
+# Option 1: Get Region Information
+if option == "Get Region Information":
+    states = data['State'].unique()
+    state = st.selectbox("Choose State", states)
+    districts = data[data['State'] == state]['District'].unique()
+    district = st.selectbox("Choose District", districts)
+    seasons = data[(data['State'] == state) & (data['District'] == district)]['Season'].unique()
+    season = st.selectbox("Select Season", seasons)
+
+    filtered_data_region = data[
+        (data['State'] == state) & (data['District'] == district) & (data['Season'] == season)
+    ]
+    st.subheader("Crops Information for the selected Region and Season")
+    st.dataframe(filtered_data_region)
+
+    if st.checkbox("Show Graph"):
+        num_crops_to_display = st.slider("Select the number of crops to display", 5, 50, 10)
+        filtered_data_region_limited = filtered_data_region.head(num_crops_to_display)
+        fig, ax = plt.subplots(figsize=(12, 8))
+        sns.barplot(data=filtered_data_region_limited, x="Crop", y="Area", ax=ax)
+        plt.xticks(rotation=90)
+        st.pyplot(fig)
+
+# Option 2: Get Crop Information
+elif option == "Get Crop Information":
+    crops = data['Crop'].unique()
+    crop = st.selectbox("Choose Crop", crops)
+    states_for_crop = data[data['Crop'] == crop]['State'].unique()
+    state_for_crop = st.selectbox("Choose State", ["All of the above"] + list(states_for_crop))
+
+    if state_for_crop == "All of the above":
+        filtered_data_crop = data[data['Crop'] == crop]
+    else:
+        filtered_data_crop = data[(data['Crop'] == crop) & (data['State'] == state_for_crop)]
+
+    st.subheader(f"Data for {crop} ({state_for_crop if state_for_crop != 'All of the above' else 'All States'})")
+    st.dataframe(filtered_data_crop)
+
+    if st.checkbox("Show Graph"):
+        num_districts_to_display = st.slider("Select the number of districts to display", 5, 50, 10)
+        filtered_data_crop_limited = filtered_data_crop.head(num_districts_to_display)
+        fig, ax = plt.subplots(figsize=(12, 8))
+        sns.barplot(data=filtered_data_crop_limited, x="District", y="Area", ax=ax)
+        plt.xticks(rotation=90)
+        st.pyplot(fig)
